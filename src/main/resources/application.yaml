@@ -1,0 +1,8 @@
+spring:
+  jooq:
+    sql-dialect: postgres
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mde
+    username: postgres
+    password: start
+    driver-class-name: org.postgresql.Driver
