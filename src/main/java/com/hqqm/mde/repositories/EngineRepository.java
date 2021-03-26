@@ -1,26 +1,22 @@
-package com.hqqm.mde.services;
+package com.hqqm.mde.repositories;
 
-import com.hqqm.mde.jooq.enums.*;
+import com.hqqm.mde.controllers.engine.EngineDTO;
 import com.hqqm.mde.jooq.tables.*;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import org.jooq.Condition;
 import org.jooq.DSLContext;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@RestController
-public class EngineController {
+@Repository
+@AllArgsConstructor
+public class EngineRepository {
     private final DSLContext context;
 
-    public EngineController(DSLContext context) {
-        this.context = context;
-    }
-
-    @GetMapping("/engines")
-    public List<EngineDTO> getEngines() {
+    public List<EngineDTO> getEngines(Condition condition) {
         final Engines engines = Engines.ENGINES_;
-        var res = context.select(
+        return context.select(
                 //general
                 engines.MODEL,
                 engines.POWER_RATING,
@@ -32,7 +28,7 @@ public class EngineController {
                 Flanges.FLANGES.TYPE.as("flangeType"),
                 // recommended operating time
                 engines.OPERATING_TIME_YEAR,
-                engines.OPERATING_TIME_FRST_TS,
+                engines.OPERATING_TIME_FIRST_TS,
                 engines.OPERATING_TIME_TO_REPAIR,
                 // fuel consumption
                 engines.FUEL_RATE,
@@ -70,79 +66,16 @@ public class EngineController {
                 ClassificationSocieties.CLASSIFICATION_SOCIETIES.NAME.as("classificationSociety"),
                 engines.VESSEL_TYPE
 
-                )
+        )
                 .from(engines)
                 .leftJoin(Manufacturers.MANUFACTURERS).using(engines.MANUFACTURER_ID)
                 .leftJoin(Assignments.ASSIGNMENTS).using(engines.ASSIGNMENT_ID)
                 .leftJoin(Ratings.RATINGS).using(engines.RATING_ID)
                 .leftJoin(ClassificationSocieties.CLASSIFICATION_SOCIETIES).using(engines.CLASSIFICATION_SOCIETY_ID)
                 .leftJoin(Flanges.FLANGES).using(engines.FLANGE_ID)
+                .where(condition)
                 .fetch()
                 .into(EngineDTO.class);
-
-        return res;
     }
-
 }
 
-@Data
-class EngineDTO {
-    // general
-    private String model;
-    private Integer powerRating;
-    private Integer rotationSpeed;
-    private String manufacturerAbbreviation;
-    private Integer torqueMax;
-    private String assignment;
-    private String load_mode;
-    private String flangeType;
-
-    // recommended operating time
-    private Integer operatingTimeYear;
-    private Integer operatingTimeFrstTs;
-    private Integer operatingTimeToRepair;
-
-    // fuel consumption
-    private Integer fuelRate;
-    private Float fuelRateNominalPower;
-
-    // cylinder
-    private Float cylinderWorkingVolume;
-    private Integer cylinderQuantity;
-    private Integer cylinderDiameter;
-    private Integer pistonStroke;
-    private Float compressionRatio;
-    private Integer cylinderMaxPressure;
-    private ArrangementCylinders cylinderArrangement;
-    private Integer cylinderDegrees;
-
-    // injection
-    private InjectionTypes injectionType;
-    private Integer injectionPressure;
-    
-    // dimensions
-    private Integer length;
-    private Integer width;
-    private Integer height;
-
-    // weight
-    private Integer weightDryNoImplements;
-    private Integer weightWithImplements;
-    
-    // cooling
-    private CoolingSystemTypes coolingSystemType;
-    private Integer coolingSystemVolume;
-
-    // oil
-    private Float oilRate;
-    private Integer oilSystemVolume;
-    
-    // eco standards
-    private ImoEcoStandards imoEcoStandard;
-    private EpaEcoStandards epaEcoStandard;
-    private EuEcoStandards euEcoStandard;
-    private UicEcoStandards uicEcoStandard;
-
-    private VesselTypes vesselType;
-    private String classificationSociety;
-}

@@ -1,48 +1,66 @@
-package com.hqqm.mde.models;
+package com.hqqm.mde.controllers.engine;
 
 import com.hqqm.mde.jooq.enums.*;
 import lombok.Data;
 
 @Data
-public class Engine {
-    private Integer engine_id;
-    private Integer manufacturer_id;
-    private String series;
+public class EngineDTO {
+    // general
     private String model;
-    private Integer assignmentId;
-    private Integer engineRatingId;
+    private Integer powerRating;
+    private Integer rotationSpeed;
+    private String manufacturerAbbreviation;
+    private Integer torqueMax;
+    private String assignment;
+    private String loadMode;
+    private String flangeType;
+
+    // recommended operating time
     private Integer operatingTimeYear;
     private Integer operatingTimeFirstTs;
     private Integer operatingTimeToRepair;
-    private Integer powerRating;
-    private Integer rotationSpeed;
-    private Integer torqueMax;
+
+    // fuel consumption
     private Integer fuelRate;
     private Float fuelRateNominalPower;
+
+    // cylinder
     private Float cylinderWorkingVolume;
     private Integer cylinderQuantity;
     private Integer cylinderDiameter;
     private Integer pistonStroke;
     private Float compressionRatio;
-    private InjectionTypes injectionType;
-    private Integer injectionPressure;
     private Integer cylinderMaxPressure;
     private ArrangementCylinders cylinderArrangement;
     private Integer cylinderDegrees;
-    private Integer weightDryNoImplements;
-    private Integer weightWithImplements;
-    private CoolingSystemTypes coolingSystemType;
+
+    // injection
+    private InjectionTypes injectionType;
+    private Integer injectionPressure;
+
+    // dimensions
     private Integer length;
     private Integer width;
     private Integer height;
+
+    // weight
+    private Integer weightDryNoImplements;
+    private Integer weightWithImplements;
+
+    // cooling
+    private CoolingSystemTypes coolingSystemType;
+    private Integer coolingSystemVolume;
+
+    // oil
     private Float oilRate;
     private Integer oilSystemVolume;
-    private Integer coolingSystemVolume;
+
+    // eco standards
     private ImoEcoStandards imoEcoStandard;
     private EpaEcoStandards epaEcoStandard;
     private EuEcoStandards euEcoStandard;
     private UicEcoStandards uicEcoStandard;
+
     private VesselTypes vesselType;
-    private Integer classificationSocietyId;
-    private Integer flangeId;
+    private String classificationSociety;
 }
