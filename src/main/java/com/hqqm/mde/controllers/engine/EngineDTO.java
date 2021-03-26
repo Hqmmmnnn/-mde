@@ -1,4 +1,4 @@
-package com.hqqm.mde.DTOs;
+package com.hqqm.mde.controllers.engine;
 
 import com.hqqm.mde.jooq.enums.*;
 import lombok.Data;

@@ -1,6 +1,6 @@
 package com.hqqm.mde.repositories;
 
-import com.hqqm.mde.DTOs.EngineDTO;
+import com.hqqm.mde.controllers.engine.EngineDTO;
 import com.hqqm.mde.jooq.tables.*;
 import lombok.AllArgsConstructor;
 import org.jooq.Condition;
