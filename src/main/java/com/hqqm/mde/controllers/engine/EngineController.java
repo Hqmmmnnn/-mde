@@ -12,7 +12,7 @@ public class EngineController {
     private final EngineService engineService;
 
     @GetMapping("/engines")
-    public List<EngineDTO> getEngines(EngineRequestParams engineParams) {
+    public List<EngineDTO> getEngines(EngineRequestParamsForFiltration engineParams) {
         return engineService.getEngines(engineParams);
     }
 }
