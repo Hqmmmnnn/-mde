@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class EngineDTO {
+    private Integer id;
     // general
     private String model;
     private Integer powerRating;

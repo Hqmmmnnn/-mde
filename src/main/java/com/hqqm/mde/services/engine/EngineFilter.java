@@ -1,6 +1,6 @@
 package com.hqqm.mde.services.engine;
 
-import com.hqqm.mde.controllers.engine.EngineRequestParams;
+import com.hqqm.mde.controllers.engine.EngineRequestParamsForFiltration;
 import com.hqqm.mde.jooq.enums.EpaEcoStandards;
 import com.hqqm.mde.jooq.enums.EuEcoStandards;
 import com.hqqm.mde.jooq.enums.ImoEcoStandards;
@@ -20,12 +20,18 @@ import java.util.Optional;
 import static org.jooq.impl.DSL.trueCondition;
 
 class EngineFilter {
-    private final EngineRequestParams e;
+    private final EngineRequestParamsForFiltration e;
     private Condition condition;
+    private final Integer lastFetchedEngineId;
 
-    public EngineFilter(EngineRequestParams e) {
+    public EngineFilter(EngineRequestParamsForFiltration e) {
         this.e = e;
         condition = trueCondition();
+        lastFetchedEngineId = e.getLastFetchedEngineId() == null ? 0 : e.getLastFetchedEngineId();
+    }
+
+    public Integer getLastFetchedEngineId() {
+        return lastFetchedEngineId;
     }
 
     public Condition getCondition() {
@@ -56,8 +62,7 @@ class EngineFilter {
         }
 
         if (rotationSpeed != null) {
-            int[] range = StringToRangeMapper.convert(rotationSpeed);
-            condition = condition.and(Engines.ENGINES_.ROTATION_SPEED.between(range[0]).and(range[1]));
+            condition = condition.and(Engines.ENGINES_.ROTATION_SPEED.eq(rotationSpeed));
         }
 
         if (cylinderQuantity != null)
