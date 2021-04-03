@@ -3,7 +3,7 @@ package com.hqqm.mde.controllers.engine;
 import lombok.Data;
 
 @Data
-public class EngineRequestParamsForFiltration {
+public class RequestParamsForEngineFiltration {
     private String model;
     private String manufacturerName;
     private String powerRating;
@@ -18,5 +18,5 @@ public class EngineRequestParamsForFiltration {
     private String epaEcoStandard;
     private String euEcoStandard;
     private String uicEcoStandard;
-    private Integer lastFetchedEngineId;
+    private Long lastFetchedEngineId;
 }

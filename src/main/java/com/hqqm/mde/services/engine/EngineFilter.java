@@ -1,6 +1,6 @@
 package com.hqqm.mde.services.engine;
 
-import com.hqqm.mde.controllers.engine.EngineRequestParamsForFiltration;
+import com.hqqm.mde.controllers.engine.RequestParamsForEngineFiltration;
 import com.hqqm.mde.jooq.enums.EpaEcoStandards;
 import com.hqqm.mde.jooq.enums.EuEcoStandards;
 import com.hqqm.mde.jooq.enums.ImoEcoStandards;
@@ -8,29 +8,24 @@ import com.hqqm.mde.jooq.enums.UicEcoStandards;
 import com.hqqm.mde.jooq.tables.Engines;
 import com.hqqm.mde.jooq.tables.Flanges;
 import com.hqqm.mde.jooq.tables.Manufacturers;
-import com.hqqm.mde.lib.FromRequestParamsMappers.StringToRangeMapper;
-import com.hqqm.mde.lib.FromRequestParamsMappers.stringToEcoEnumMappers.StringToEpaEnumMapper;
-import com.hqqm.mde.lib.FromRequestParamsMappers.stringToEcoEnumMappers.StringToEuEnumMapper;
-import com.hqqm.mde.lib.FromRequestParamsMappers.stringToEcoEnumMappers.StringToImoEnumMapper;
-import com.hqqm.mde.lib.FromRequestParamsMappers.stringToEcoEnumMappers.StringToUicEnumMapper;
+import com.hqqm.mde.lib.FromRequestParamsMappers.StringToEnumConverter;
+import com.hqqm.mde.lib.FromRequestParamsMappers.StringToRangeConverter;
+
 import org.jooq.Condition;
-
-import java.util.Optional;
-
 import static org.jooq.impl.DSL.trueCondition;
 
 class EngineFilter {
-    private final EngineRequestParamsForFiltration e;
+    private final RequestParamsForEngineFiltration e;
     private Condition condition;
-    private final Integer lastFetchedEngineId;
+    private final Long lastFetchedEngineId;
 
-    public EngineFilter(EngineRequestParamsForFiltration e) {
+    public EngineFilter(RequestParamsForEngineFiltration e) {
         this.e = e;
         condition = trueCondition();
         lastFetchedEngineId = e.getLastFetchedEngineId() == null ? 0 : e.getLastFetchedEngineId();
     }
 
-    public Integer getLastFetchedEngineId() {
+    public Long getLastFetchedEngineId() {
         return lastFetchedEngineId;
     }
 
@@ -57,7 +52,7 @@ class EngineFilter {
             condition = condition.and(Manufacturers.MANUFACTURERS.NAME.eq(manufacturerName));
 
         if (powerRating != null) {
-            int[] range = StringToRangeMapper.convert(powerRating);
+            int[] range = StringToRangeConverter.convert(powerRating);
             condition = condition.and(Engines.ENGINES_.POWER_RATING.between(range[0]).and(range[1]));
         }
 
@@ -69,22 +64,22 @@ class EngineFilter {
             condition = condition.and(Engines.ENGINES_.CYLINDER_QUANTITY.eq(cylinderQuantity));
 
         if (weightDryNoImplements != null) {
-            int[] range = StringToRangeMapper.convert(weightDryNoImplements);
+            int[] range = StringToRangeConverter.convert(weightDryNoImplements);
             condition = condition.and(Engines.ENGINES_.WEIGHT_DRY_NO_IMPLEMENTS.between(range[0]).and(range[1]));
         }
 
         if (length != null) {
-            int[] range = StringToRangeMapper.convert(length);
+            int[] range = StringToRangeConverter.convert(length);
             condition = condition.and(Engines.ENGINES_.LENGTH.between(range[0]).and(range[1]));
         }
 
         if (width != null) {
-            int[] range = StringToRangeMapper.convert(width);
+            int[] range = StringToRangeConverter.convert(width);
             condition = condition.and(Engines.ENGINES_.WIDTH.between(range[0]).and(range[1]));
         }
 
         if (height != null) {
-            int[] range = StringToRangeMapper.convert(height);
+            int[] range = StringToRangeConverter.convert(height);
             condition = condition.and(Engines.ENGINES_.HEIGHT.between(range[0]).and(range[1]));
         }
 
@@ -92,23 +87,27 @@ class EngineFilter {
             condition = condition.and(Flanges.FLANGES.TYPE.eq(flangeType));
 
         if (imoEcoStandard != null) {
-            Optional<ImoEcoStandards> imo = StringToImoEnumMapper.convert(imoEcoStandard);
-            imo.ifPresent(imoEcoStandards -> condition = condition.and(Engines.ENGINES_.IMO_ECO_STANDARD.eq(imoEcoStandards)));
+            ImoEcoStandards imo = StringToEnumConverter.convert(imoEcoStandard, ImoEcoStandards.values());
+            if (imo != null)
+                condition = condition.and(Engines.ENGINES_.IMO_ECO_STANDARD.eq(imo));
         }
 
         if (epaEcoStandard != null) {
-            Optional<EpaEcoStandards> epa = StringToEpaEnumMapper.convert(epaEcoStandard);
-            epa.ifPresent(epaEcoStandards -> condition = condition.and(Engines.ENGINES_.EPA_ECO_STANDARD.eq(epaEcoStandards)));
+            EpaEcoStandards epa = StringToEnumConverter.convert(epaEcoStandard, EpaEcoStandards.values());
+            if (epa != null)
+                condition = condition.and(Engines.ENGINES_.EPA_ECO_STANDARD.eq(epa));
         }
 
         if (euEcoStandard != null) {
-            Optional<EuEcoStandards> eu = StringToEuEnumMapper.convert(euEcoStandard);
-            eu.ifPresent(euEcoStandards -> condition = condition.and(Engines.ENGINES_.EU_ECO_STANDARD.eq(euEcoStandards)));
+            EuEcoStandards eu = StringToEnumConverter.convert(euEcoStandard, EuEcoStandards.values());
+            if (eu != null)
+                condition = condition.and(Engines.ENGINES_.EU_ECO_STANDARD.eq(eu));
         }
 
         if (uicEcoStandard != null) {
-            Optional<UicEcoStandards> uic = StringToUicEnumMapper.convert(uicEcoStandard);
-            uic.ifPresent(uicEcoStandards -> condition = condition.and(Engines.ENGINES_.UIC_ECO_STANDARD.eq(uicEcoStandards)));
+            UicEcoStandards uic = StringToEnumConverter.convert(uicEcoStandard, UicEcoStandards.values());
+            if (uic != null)
+                condition = condition.and(Engines.ENGINES_.UIC_ECO_STANDARD.eq(uic));
         }
 
         return condition;

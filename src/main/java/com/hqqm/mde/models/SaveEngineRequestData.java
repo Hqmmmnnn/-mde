@@ -1,11 +1,12 @@
 package com.hqqm.mde.models;
 
-import com.hqqm.mde.jooq.enums.*;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Data
-public class Engine {
-    private Integer engineId;
+public class SaveEngineRequestData {
     private Integer manufacturerId;
     private String series;
     private String model;
@@ -24,26 +25,26 @@ public class Engine {
     private Integer cylinderDiameter;
     private Integer pistonStroke;
     private Float compressionRatio;
-    private InjectionTypes injectionType;
+    private String injectionType;
     private Integer injectionPressure;
     private Integer cylinderMaxPressure;
-    private ArrangementCylinders cylinderArrangement;
+    private String cylinderArrangement;
     private Integer cylinderDegrees;
     private Integer weightDryNoImplements;
     private Integer weightWithImplements;
-    private CoolingSystemTypes coolingSystemType;
+    private String coolingSystemType;
     private Integer length;
     private Integer width;
     private Integer height;
     private Float oilRate;
     private Integer oilSystemVolume;
     private Integer coolingSystemVolume;
-    private ImoEcoStandards imoEcoStandard;
-    private EpaEcoStandards epaEcoStandard;
-    private EuEcoStandards euEcoStandard;
-    private UicEcoStandards uicEcoStandard;
-    private VesselTypes vesselType;
+    private String imoEcoStandard;
+    private String epaEcoStandard;
+    private String euEcoStandard;
+    private String uicEcoStandard;
+    private String vesselType;
     private Integer classificationSocietyId;
     private Integer flangeId;
-    private Integer manufacturerBrochureId;
+    private List<MultipartFile> files;
 }
