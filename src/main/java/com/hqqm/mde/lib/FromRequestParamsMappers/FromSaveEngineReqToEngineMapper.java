@@ -7,6 +7,7 @@ import com.hqqm.mde.models.SaveEngineRequestData;
 public class FromSaveEngineReqToEngineMapper {
     public static Engine map(SaveEngineRequestData data) {
         Engine e = new Engine();
+        e.setEngineId(data.getEngineId());
         e.setManufacturerId(data.getManufacturerId());
         e.setSeries(data.getSeries());
         e.setModel(data.getModel());

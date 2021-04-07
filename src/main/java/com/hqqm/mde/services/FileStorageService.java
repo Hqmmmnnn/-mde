@@ -22,15 +22,21 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class FileSystemStorageService {
+public class FileStorageService {
 
     @Getter
     private final Path dirLocation;
+    @Getter
+    private final Path tmpLocation;
     private final FileRepository fileRepository;
 
-    public FileSystemStorageService(FileUploadProperties fileUploadProperties, FileRepository fileRepository) {
+    public FileStorageService(FileUploadProperties fileUploadProperties, FileRepository fileRepository) {
         this.fileRepository = fileRepository;
         dirLocation = Paths.get(fileUploadProperties.getLocation())
+                           .toAbsolutePath()
+                           .normalize();
+
+        tmpLocation = Paths.get(fileUploadProperties.getTmpLocation())
                            .toAbsolutePath()
                            .normalize();
         try {
@@ -50,16 +56,33 @@ public class FileSystemStorageService {
     }
 
     public void saveFilesInFileSystem(List<MultipartFile> files) {
-        try {
-            for (MultipartFile file : files) {
-                String filename = file.getOriginalFilename();
-                Path dFile = this.dirLocation.resolve(filename);
+        for (MultipartFile file : files) {
+            String filename = file.getOriginalFilename();
+            Path dFile = this.dirLocation.resolve(filename);
 
+            try {
                 Files.copy(file.getInputStream(), dFile, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                throw new RuntimeException("Could not upload file in " + dFile);
             }
-        } catch (IOException e) {
-            throw new RuntimeException("Could not upload file " + e.getMessage());
         }
+    }
+
+    public void updateFilesInFileSystem(List<MultipartFile> files) {
+        for (MultipartFile file : files) {
+            String filename = file.getOriginalFilename();
+            Path dFile = this.tmpLocation.resolve(filename);
+
+            try {
+                Files.copy(file.getInputStream(), dFile, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                throw new RuntimeException("Could not copy file in " + dFile);
+            }
+        }
+    }
+
+    public void deleteEngineFiles(Long engineId) {
+        fileRepository.deleteEngineFiles((engineId));
     }
 
     public Resource loadFile(String fileName) {

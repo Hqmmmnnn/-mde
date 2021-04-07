@@ -1,4 +1,4 @@
-package com.hqqm.mde.controllers.engine;
+package com.hqqm.mde.models;
 
 import com.hqqm.mde.jooq.enums.*;
 import lombok.Data;
@@ -10,7 +10,7 @@ public class EngineDTO {
     private String model;
     private Integer powerRating;
     private Integer rotationSpeed;
-    private String manufacturerAbbreviation;
+    private String manufacturerName;
     private Integer torqueMax;
     private String assignment;
     private String loadMode;

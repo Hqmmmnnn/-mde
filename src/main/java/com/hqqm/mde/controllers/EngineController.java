@@ -1,10 +1,9 @@
-package com.hqqm.mde.controllers.engine;
-import com.hqqm.mde.models.SaveEngineRequestData;
+package com.hqqm.mde.controllers;
+import com.hqqm.mde.models.*;
+import com.hqqm.mde.services.engine.EngineFacade;
 import com.hqqm.mde.services.engine.EngineService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,8 +18,18 @@ public class EngineController {
         return engineService.getEngines(engineParams);
     }
 
-    @PostMapping("/saveEngine")
+    @PostMapping("/engines/saveEngine")
     public Long saveEngine(SaveEngineRequestData saveEngineRequestData) {
         return engineFacade.saveEngine(saveEngineRequestData);
+    }
+
+    @PutMapping("/engines/updateEngine")
+    public void updateEngine(SaveEngineRequestData saveEngineRequestData) {
+        engineFacade.updateEngine(saveEngineRequestData);
+    }
+
+    @DeleteMapping("/engines/{id}")
+    public int deleteEngine(@PathVariable Long id) {
+        return engineService.deleteEngine(id);
     }
 }

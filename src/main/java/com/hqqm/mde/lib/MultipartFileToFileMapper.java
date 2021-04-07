@@ -8,11 +8,11 @@ import java.nio.file.Path;
 public class MultipartFileToFileMapper {
     public static FileEntity mapper(MultipartFile file, Long engineId, Path location) {
         FileEntity f = new FileEntity();
-        String filaname = file.getOriginalFilename();
+        String filename = file.getOriginalFilename();
 
         f.setEngineId(engineId);
-        f.setName(filaname);
-        f.setLocation(location.resolve(filaname).toString());
+        f.setName(filename);
+        f.setLocation(location.resolve(filename).toString());
         f.setContentType(file.getContentType());
 
         return f;

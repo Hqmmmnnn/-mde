@@ -16,15 +16,21 @@ public class FileRepository {
 
     private final Files f = Files.FILES;
 
-    public void saveFiles(List<FileEntity> fileEntities) {
+    public void saveFiles(List<FileEntity> files) {
         BatchBindStep batch = context
                 .batch(context.insertInto(f, f.ENGINE_ID, f.NAME, f.LOCATION, f.CONTENT_TYPE)
                               .values(       (Long) null, null  , null      , null          ));
 
-        fileEntities.forEach(fileEntity ->
+        files.forEach(fileEntity ->
                 batch.bind(fileEntity.getEngineId(), fileEntity.getName(), fileEntity.getLocation(), fileEntity.getContentType())
         );
 
         batch.execute();
+    }
+
+    public void deleteEngineFiles(Long engineId) {
+        context.delete(f)
+                .where(f.ENGINE_ID.eq(engineId))
+                .execute();
     }
 }

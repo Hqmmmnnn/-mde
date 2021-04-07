@@ -1,6 +1,6 @@
 package com.hqqm.mde.repositories;
 
-import com.hqqm.mde.controllers.engine.EngineDTO;
+import com.hqqm.mde.models.EngineDTO;
 import com.hqqm.mde.jooq.tables.*;
 import com.hqqm.mde.models.Engine;
 import org.jooq.Condition;
@@ -31,7 +31,7 @@ public class EngineRepository {
                 e.MODEL,
                 e.POWER_RATING,
                 e.ROTATION_SPEED,
-                m.ABBREVIATION.as("manufacturerAbbreviation"),
+                m.NAME.as("manufacturerName"),
                 e.TORQUE_MAX,
                 a.ASSIGNMENT,
                 r.LOAD_MODE,
@@ -112,12 +112,64 @@ public class EngineRepository {
                         engine.getInjectionPressure(), engine.getCylinderMaxPressure(), engine.getCylinderArrangement(),
                         engine.getCylinderDegrees(), engine.getWeightDryNoImplements(), engine.getWeightWithImplements(),
                         engine.getCoolingSystemType(), engine.getLength(), engine.getWidth(), engine.getHeight(),
-                        engine.getOilRate(), engine.getOilSystemVolume(), engine.getCoolingSystemType(), engine.getImoEcoStandard(),
+                        engine.getOilRate(), engine.getOilSystemVolume(), engine.getCoolingSystemVolume(), engine.getImoEcoStandard(),
                         engine.getEpaEcoStandard(), engine.getEuEcoStandard(), engine.getUicEcoStandard(), engine.getVesselType(),
                         engine.getClassificationSocietyId(), engine.getFlangeId())
                 .returningResult(e.ENGINE_ID)
                 .fetchOne();
 
         return engineIdRecord.getValue(e.ENGINE_ID);
+    }
+
+    public void updateEngine(Engine engine) {
+         context.update(e)
+                .set(e.MANUFACTURER_ID, engine.getManufacturerId())
+                .set(e.SERIES, engine.getSeries())
+                .set(e.MODEL, engine.getModel())
+                .set(e.ASSIGNMENT_ID, engine.getAssignmentId())
+                .set(e.RATING_ID, engine.getEngineRatingId())
+                .set(e.OPERATING_TIME_YEAR, engine.getOperatingTimeYear())
+                .set(e.OPERATING_TIME_FIRST_TS, engine.getOperatingTimeFirstTs())
+                .set(e.OPERATING_TIME_TO_REPAIR, engine.getOperatingTimeToRepair())
+                .set(e.POWER_RATING, engine.getPowerRating())
+                .set(e.ROTATION_SPEED, engine.getRotationSpeed())
+                .set(e.TORQUE_MAX, engine.getTorqueMax())
+                .set(e.FUEL_RATE, engine.getFuelRate())
+                .set(e.FUEL_RATE_NOMINAL_POWER, engine.getFuelRateNominalPower())
+                .set(e.CYLINDER_WORKING_VOLUME, engine.getCylinderWorkingVolume())
+                .set(e.CYLINDER_QUANTITY, engine.getCylinderQuantity())
+                .set(e.CYLINDER_DIAMETER, engine.getCylinderDiameter())
+                .set(e.PISTON_STROKE, engine.getPistonStroke())
+                .set(e.COMPRESSION_RATIO, engine.getCompressionRatio())
+                .set(e.INJECTION_TYPE, engine.getInjectionType())
+                .set(e.INJECTION_PRESSURE, engine.getInjectionPressure())
+                .set(e.CYLINDER_MAX_PRESSURE, engine.getCylinderMaxPressure())
+                .set(e.CYLINDER_ARRANGEMENT, engine.getCylinderArrangement())
+                .set(e.CYLINDER_DEGREES, engine.getCylinderDegrees())
+                .set(e.WEIGHT_DRY_NO_IMPLEMENTS, engine.getWeightDryNoImplements())
+                .set(e.WEIGHT_WITH_IMPLEMENTS, engine.getWeightWithImplements())
+                .set(e.COOLING_SYSTEM_TYPE, engine.getCoolingSystemType())
+                .set(e.LENGTH, engine.getLength())
+                .set(e.WIDTH, engine.getWidth())
+                .set(e.HEIGHT, engine.getHeight())
+                .set(e.OIL_RATE, engine.getOilRate())
+                .set(e.OIL_SYSTEM_VOLUME, engine.getOilSystemVolume())
+                .set(e.COOLING_SYSTEM_VOLUME, engine.getCoolingSystemVolume())
+                .set(e.IMO_ECO_STANDARD, engine.getImoEcoStandard())
+                .set(e.EPA_ECO_STANDARD, engine.getEpaEcoStandard())
+                .set(e.EU_ECO_STANDARD, engine.getEuEcoStandard())
+                .set(e.UIC_ECO_STANDARD, engine.getUicEcoStandard())
+                .set(e.VESSEL_TYPE, engine.getVesselType())
+                .set(e.CLASSIFICATION_SOCIETY_ID, engine.getClassificationSocietyId())
+                .set(e.FLANGE_ID, engine.getFlangeId())
+                .where(e.ENGINE_ID.eq(engine.getEngineId()))
+                .returning()
+                .fetchOne();
+    }
+
+    public int deleteEngine(Long id) {
+        return context.delete(e)
+                      .where(e.ENGINE_ID.eq(id))
+                      .execute();
     }
 }

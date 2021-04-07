@@ -1,4 +1,4 @@
-package com.hqqm.mde.controllers.engine;
+package com.hqqm.mde.models;
 
 import lombok.Data;
 

@@ -1,11 +1,10 @@
 package com.hqqm.mde.services.engine;
 
-import com.hqqm.mde.controllers.engine.EngineDTO;
-import com.hqqm.mde.controllers.engine.RequestParamsForEngineFiltration;
-import com.hqqm.mde.models.Engine;
+import com.hqqm.mde.models.*;
 import com.hqqm.mde.repositories.EngineRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,5 +20,14 @@ public class EngineService {
 
     public Long saveEngine(Engine engine) {
         return engineRepository.saveEngine(engine);
+    }
+
+    public void updateEngine(Engine engine) {
+        engineRepository.updateEngine(engine);
+    }
+
+    @Transactional
+    public int deleteEngine(Long id) {
+        return engineRepository.deleteEngine(id);
     }
 }

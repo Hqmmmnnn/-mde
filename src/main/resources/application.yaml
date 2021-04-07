@@ -17,3 +17,7 @@ spring:
 file:
   upload:
     location: /home/hqqm/mde/uploads
+    tmpLocation: /home/hqqm/mde/temp
+
+server:
+  port: 8001

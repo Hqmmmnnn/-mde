@@ -3,9 +3,11 @@ package com.hqqm.mde.models;
 import com.hqqm.mde.jooq.enums.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class Engine {
-    private Integer engineId;
+    private Long engineId;
     private Integer manufacturerId;
     private String series;
     private String model;
@@ -45,5 +47,5 @@ public class Engine {
     private VesselTypes vesselType;
     private Integer classificationSocietyId;
     private Integer flangeId;
-    private Integer manufacturerBrochureId;
+    private List<FileEntity> files;
 }

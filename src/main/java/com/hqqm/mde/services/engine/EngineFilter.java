@@ -1,6 +1,7 @@
 package com.hqqm.mde.services.engine;
 
-import com.hqqm.mde.controllers.engine.RequestParamsForEngineFiltration;
+import com.hqqm.mde.lib.EcoStandardParser;
+import com.hqqm.mde.models.RequestParamsForEngineFiltration;
 import com.hqqm.mde.jooq.enums.EpaEcoStandards;
 import com.hqqm.mde.jooq.enums.EuEcoStandards;
 import com.hqqm.mde.jooq.enums.ImoEcoStandards;
@@ -46,10 +47,10 @@ class EngineFilter {
         var uicEcoStandard = e.getUicEcoStandard();
 
         if (model != null)
-            condition = condition.and(Engines.ENGINES_.MODEL.like("%" + model + "%"));
+            condition = condition.and(Engines.ENGINES_.MODEL.likeIgnoreCase("%" + model + "%"));
 
         if (manufacturerName != null)
-            condition = condition.and(Manufacturers.MANUFACTURERS.NAME.eq(manufacturerName));
+            condition = condition.and(Manufacturers.MANUFACTURERS.NAME.equalIgnoreCase(manufacturerName));
 
         if (powerRating != null) {
             int[] range = StringToRangeConverter.convert(powerRating);
@@ -87,24 +88,28 @@ class EngineFilter {
             condition = condition.and(Flanges.FLANGES.TYPE.eq(flangeType));
 
         if (imoEcoStandard != null) {
+            imoEcoStandard = EcoStandardParser.parse(imoEcoStandard);
             ImoEcoStandards imo = StringToEnumConverter.convert(imoEcoStandard, ImoEcoStandards.values());
             if (imo != null)
                 condition = condition.and(Engines.ENGINES_.IMO_ECO_STANDARD.eq(imo));
         }
 
         if (epaEcoStandard != null) {
+            epaEcoStandard = EcoStandardParser.parse(epaEcoStandard);
             EpaEcoStandards epa = StringToEnumConverter.convert(epaEcoStandard, EpaEcoStandards.values());
             if (epa != null)
                 condition = condition.and(Engines.ENGINES_.EPA_ECO_STANDARD.eq(epa));
         }
 
         if (euEcoStandard != null) {
+            euEcoStandard = EcoStandardParser.parse(euEcoStandard);
             EuEcoStandards eu = StringToEnumConverter.convert(euEcoStandard, EuEcoStandards.values());
             if (eu != null)
                 condition = condition.and(Engines.ENGINES_.EU_ECO_STANDARD.eq(eu));
         }
 
         if (uicEcoStandard != null) {
+            uicEcoStandard = EcoStandardParser.parse(uicEcoStandard);
             UicEcoStandards uic = StringToEnumConverter.convert(uicEcoStandard, UicEcoStandards.values());
             if (uic != null)
                 condition = condition.and(Engines.ENGINES_.UIC_ECO_STANDARD.eq(uic));

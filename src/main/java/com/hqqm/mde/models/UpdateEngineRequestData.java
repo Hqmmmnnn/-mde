@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @Data
-public class SaveEngineRequestData {
+public class UpdateEngineRequestData {
     private Long engineId;
     private Integer manufacturerId;
     private String series;
