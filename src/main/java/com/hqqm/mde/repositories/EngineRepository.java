@@ -103,7 +103,7 @@ public class EngineRepository {
                         e.COOLING_SYSTEM_TYPE, e.LENGTH, e.WIDTH, e.HEIGHT,
                         e.OIL_RATE, e.OIL_SYSTEM_VOLUME, e.COOLING_SYSTEM_VOLUME, e.IMO_ECO_STANDARD,
                         e.EPA_ECO_STANDARD, e.EU_ECO_STANDARD, e.UIC_ECO_STANDARD, e.VESSEL_TYPE,
-                        e.CLASSIFICATION_SOCIETY_ID, e.FLANGE_ID)
+                        e.CLASSIFICATION_SOCIETY_ID, e.FLANGE_ID, e.PATH_TO_IMAGE)
                 .values(engine.getManufacturerId(), engine.getSeries(), engine.getModel(), engine.getAssignmentId(), engine.getEngineRatingId(),
                         engine.getOperatingTimeYear(), engine.getOperatingTimeFirstTs(), engine.getOperatingTimeToRepair(),
                         engine.getPowerRating(), engine.getRotationSpeed(), engine.getTorqueMax(), engine.getFuelRate(),
@@ -114,7 +114,7 @@ public class EngineRepository {
                         engine.getCoolingSystemType(), engine.getLength(), engine.getWidth(), engine.getHeight(),
                         engine.getOilRate(), engine.getOilSystemVolume(), engine.getCoolingSystemVolume(), engine.getImoEcoStandard(),
                         engine.getEpaEcoStandard(), engine.getEuEcoStandard(), engine.getUicEcoStandard(), engine.getVesselType(),
-                        engine.getClassificationSocietyId(), engine.getFlangeId())
+                        engine.getClassificationSocietyId(), engine.getFlangeId(), engine.getPathToImage())
                 .returningResult(e.ENGINE_ID)
                 .fetchOne();
 
@@ -162,6 +162,7 @@ public class EngineRepository {
                 .set(e.VESSEL_TYPE, engine.getVesselType())
                 .set(e.CLASSIFICATION_SOCIETY_ID, engine.getClassificationSocietyId())
                 .set(e.FLANGE_ID, engine.getFlangeId())
+                .set(e.PATH_TO_IMAGE, engine.getPathToImage())
                 .where(e.ENGINE_ID.eq(engine.getEngineId()))
                 .returning()
                 .fetchOne();
@@ -171,5 +172,15 @@ public class EngineRepository {
         return context.delete(e)
                       .where(e.ENGINE_ID.eq(id))
                       .execute();
+    }
+
+    public String findImagePath(Long engineId) {
+        var pathToImage = context
+                .select(e.PATH_TO_IMAGE)
+                .from(e)
+                .where(e.ENGINE_ID.eq(engineId))
+                .fetchOne();
+
+        return pathToImage.get(e.PATH_TO_IMAGE);
     }
 }

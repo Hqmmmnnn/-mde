@@ -47,7 +47,6 @@ public class FromSaveEngineReqToEngineMapper {
         e.setVesselType(StringToEnumConverter.convert(data.getVesselType(), VesselTypes.values()));
         e.setClassificationSocietyId(data.getClassificationSocietyId());
         e.setFlangeId(data.getFlangeId());
-
         return e;
     }
 }

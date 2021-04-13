@@ -48,4 +48,5 @@ public class SaveEngineRequestData {
     private Integer classificationSocietyId;
     private Integer flangeId;
     private List<MultipartFile> files;
+    private MultipartFile image;
 }

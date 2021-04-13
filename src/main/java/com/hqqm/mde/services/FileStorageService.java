@@ -12,6 +12,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -28,17 +29,23 @@ public class FileStorageService {
     private final Path dirLocation;
     @Getter
     private final Path tmpLocation;
+    @Getter
+    private final Path imagesLocation;
     private final FileRepository fileRepository;
 
     public FileStorageService(FileUploadProperties fileUploadProperties, FileRepository fileRepository) {
         this.fileRepository = fileRepository;
         dirLocation = Paths.get(fileUploadProperties.getLocation())
-                           .toAbsolutePath()
-                           .normalize();
+                .toAbsolutePath()
+                .normalize();
 
         tmpLocation = Paths.get(fileUploadProperties.getTmpLocation())
-                           .toAbsolutePath()
-                           .normalize();
+                .toAbsolutePath()
+                .normalize();
+
+        imagesLocation = Paths.get(fileUploadProperties.getImagesLocation())
+                .toAbsolutePath()
+                .normalize();
         try {
             Files.createDirectories(this.dirLocation);
         }
@@ -78,6 +85,30 @@ public class FileStorageService {
             } catch (IOException e) {
                 throw new RuntimeException("Could not copy file in " + dFile);
             }
+        }
+    }
+
+    public Path saveEngineImageInFileSystem(MultipartFile image) {
+        String imageName = image.getOriginalFilename();
+        Path pathToEngineImage = this.imagesLocation.resolve(imageName);
+
+        try {
+            Files.copy(image.getInputStream(), pathToEngineImage, StandardCopyOption.REPLACE_EXISTING);
+            return pathToEngineImage;
+        } catch (IOException e) {
+            throw new RuntimeException("Could not copy file: " + imageName);
+        }
+    }
+
+    public Path updateEngineImageInFileSystem(MultipartFile image) {
+        String imageName = image.getOriginalFilename();
+        Path pathToEngineImage = this.tmpLocation.resolve(imageName);
+
+        try {
+            Files.copy(image.getInputStream(), pathToEngineImage, StandardCopyOption.REPLACE_EXISTING);
+            return pathToEngineImage;
+        } catch (IOException e) {
+            throw new RuntimeException("Could not copy file: " + imageName);
         }
     }
 

@@ -15,12 +15,10 @@ public class CleanupTransactionListener implements TransactionSynchronization {
     @Override
     public void afterCompletion(int status) {
         if (status != STATUS_COMMITTED) {
-
             for (Path pathToFile : filePaths) {
                 try {
                     if (Files.exists(pathToFile))
                         Files.delete(pathToFile);
-
                 } catch (Exception e) {
                     throw new FileStorageException("Cleanup Transaction Listener didn't delete the file: " + pathToFile.getFileName());
                 }

@@ -8,4 +8,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class FileUploadProperties {
     String location;
     String tmpLocation;
+    String imagesLocation;
 }

@@ -48,4 +48,5 @@ public class Engine {
     private Integer classificationSocietyId;
     private Integer flangeId;
     private List<FileEntity> files;
+    private String pathToImage;
 }

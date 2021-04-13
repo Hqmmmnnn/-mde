@@ -18,6 +18,7 @@ file:
   upload:
     location: /home/hqqm/mde/uploads
     tmpLocation: /home/hqqm/mde/temp
+    imagesLocation: /home/hqqm/mde/images
 
 server:
   port: 8001
