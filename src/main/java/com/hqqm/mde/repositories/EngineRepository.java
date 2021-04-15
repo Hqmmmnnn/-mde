@@ -85,7 +85,7 @@ public class EngineRepository {
                 .where(condition)
                 .orderBy(e.ENGINE_ID)
                 .seek(lastFetchedEngineId)
-                .limit(2)
+                .limit(9)
                 .fetch()
                 .into(EngineDTO.class);
     }

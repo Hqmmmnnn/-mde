@@ -13,7 +13,7 @@ import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 @AllArgsConstructor
-public class AfterUpdateEngineTransactionFilesResolver implements TransactionSynchronization {
+public class AfterUpdateEngineFilesResolver implements TransactionSynchronization {
     private final Path tmpDir;
     private final Path mainDir;
     private final List<String> filenames;

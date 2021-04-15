@@ -1,8 +1,9 @@
 package com.hqqm.mde.services.engine;
 
-import com.hqqm.mde.lib.AfterUpdateEngineTransactionFilesResolver;
-import com.hqqm.mde.lib.AfterUpdateEngineTransactionImageResolver;
-import com.hqqm.mde.lib.CleanupTransactionListener;
+import com.hqqm.mde.lib.AfterUpdateEngineFilesResolver;
+import com.hqqm.mde.lib.AfterUpdateEngineImageResolver;
+import com.hqqm.mde.lib.AfterInsertEngineFilesResolver;
+import com.hqqm.mde.lib.AfterInsertEngineImageResolver;
 import com.hqqm.mde.lib.FromRequestParamsMappers.FromSaveEngineReqToEngineMapper;
 import com.hqqm.mde.models.Engine;
 import com.hqqm.mde.models.SaveEngineRequestData;
@@ -27,6 +28,8 @@ public class EngineFacade {
     public Long saveEngine(SaveEngineRequestData saveEngineRequestData) {
         Engine engine = FromSaveEngineReqToEngineMapper.map(saveEngineRequestData);
         Path pathToEngineImage = fileStorageService.saveEngineImageInFileSystem(saveEngineRequestData.getImage());
+        var imageResolver = new AfterInsertEngineImageResolver(pathToEngineImage);
+        TransactionSynchronizationManager.registerSynchronization(imageResolver);
         engine.setPathToImage(pathToEngineImage.toString());
         Long engineId = engineService.saveEngine(engine);
 
@@ -36,10 +39,9 @@ public class EngineFacade {
             List<Path> filePaths = files.stream()
                     .map(file -> mainDir.resolve(file.getOriginalFilename()))
                     .collect(Collectors.toList());
-            filePaths.add(pathToEngineImage);
 
-            var cleanupTransactionListener = new CleanupTransactionListener(filePaths);
-            TransactionSynchronizationManager.registerSynchronization(cleanupTransactionListener);
+            var filesResolver = new AfterInsertEngineFilesResolver(filePaths);
+            TransactionSynchronizationManager.registerSynchronization(filesResolver);
             fileStorageService.saveFilesMetadataInDB(files, engineId);
             fileStorageService.saveFilesInFileSystem(files);
         }
@@ -54,7 +56,7 @@ public class EngineFacade {
         Path pathToEngineImage = fileStorageService.updateEngineImageInFileSystem(engineImage);
         engine.setPathToImage(pathToEngineImage.toString());
         engineService.updateEngine(engine);
-        var imageResolver = new AfterUpdateEngineTransactionImageResolver(
+        var imageResolver = new AfterUpdateEngineImageResolver(
                 fileStorageService.getTmpLocation(),
                 fileStorageService.getImagesLocation(),
                 engineImage.getOriginalFilename()
@@ -67,7 +69,7 @@ public class EngineFacade {
                     .map(MultipartFile::getOriginalFilename)
                     .collect(Collectors.toList());
 
-            var filesResolver = new AfterUpdateEngineTransactionFilesResolver(
+            var filesResolver = new AfterUpdateEngineFilesResolver(
                     fileStorageService.getTmpLocation(),
                     fileStorageService.getDirLocation(),
                     filenames

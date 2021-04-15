@@ -6,10 +6,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 @Service
@@ -33,11 +29,5 @@ public class EngineService {
     @Transactional
     public int deleteEngine(Long id) {
         return engineRepository.deleteEngine(id);
-    }
-
-    public byte[] getImage(Long engineId) throws IOException {
-        String pathToImageStr = engineRepository.findImagePath(engineId);
-        Path pathToImage = Paths.get(pathToImageStr);
-        return Files.readAllBytes(pathToImage);
     }
 }

@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 @AllArgsConstructor
-public class CleanupTransactionListener implements TransactionSynchronization {
+public class AfterInsertEngineFilesResolver implements TransactionSynchronization {
     private final List<Path> filePaths;
 
     @Override

@@ -22,8 +22,11 @@ public class FileRepository {
                               .values(       (Long) null, null  , null      , null          ));
 
         files.forEach(fileEntity ->
-                batch.bind(fileEntity.getEngineId(), fileEntity.getName(), fileEntity.getLocation(), fileEntity.getContentType())
-        );
+                batch.bind(
+                        fileEntity.getEngineId(),
+                        fileEntity.getName(),
+                        fileEntity.getLocation(),
+                        fileEntity.getContentType()));
 
         batch.execute();
     }

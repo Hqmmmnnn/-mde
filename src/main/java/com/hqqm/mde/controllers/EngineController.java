@@ -3,10 +3,8 @@ import com.hqqm.mde.models.*;
 import com.hqqm.mde.services.engine.EngineFacade;
 import com.hqqm.mde.services.engine.EngineService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -20,12 +18,12 @@ public class EngineController {
         return engineService.getEngines(engineParams);
     }
 
-    @PostMapping("/engines/saveEngine")
+    @PostMapping("/engines")
     public Long saveEngine(SaveEngineRequestData saveEngineRequestData) {
         return engineFacade.saveEngine(saveEngineRequestData);
     }
 
-    @PutMapping("/engines/updateEngine")
+    @PutMapping("/engines")
     public void updateEngine(SaveEngineRequestData saveEngineRequestData) {
         engineFacade.updateEngine(saveEngineRequestData);
     }
@@ -33,10 +31,5 @@ public class EngineController {
     @DeleteMapping("/engines/{id}")
     public int deleteEngine(@PathVariable Long id) {
         return engineService.deleteEngine(id);
-    }
-
-    @GetMapping(value = "/images/{engineId}", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
-    public byte[] getEngineImage(@PathVariable Long engineId) throws IOException {
-        return engineService.getImage(engineId);
     }
 }
