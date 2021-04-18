@@ -9,8 +9,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public
-class ResponseError {
+public class ResponseError {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
     private LocalDateTime timestamp;
     private String message;

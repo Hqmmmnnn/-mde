@@ -20,5 +20,10 @@ file:
     tmpLocation: /home/hqqm/mde/temp
     imagesLocation: /home/hqqm/mde/images
 
+jwt:
+  header: Authorization
+  secret: mde
+  expiration: 604800
+
 server:
   port: 8001

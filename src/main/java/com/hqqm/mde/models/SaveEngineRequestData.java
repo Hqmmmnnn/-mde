@@ -1,11 +1,13 @@
 package com.hqqm.mde.models;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @Data
+@AllArgsConstructor
 public class SaveEngineRequestData {
     private Long engineId;
     private Integer manufacturerId;

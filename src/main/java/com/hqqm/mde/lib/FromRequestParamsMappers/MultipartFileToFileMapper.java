@@ -1,4 +1,4 @@
-package com.hqqm.mde.lib;
+package com.hqqm.mde.lib.FromRequestParamsMappers;
 
 import com.hqqm.mde.models.FileEntity;
 import org.springframework.web.multipart.MultipartFile;
@@ -9,6 +9,8 @@ public class MultipartFileToFileMapper {
     public static FileEntity mapper(MultipartFile file, Long engineId, Path location) {
         FileEntity f = new FileEntity();
         String filename = file.getOriginalFilename();
+        if (filename == null)
+            throw new IllegalArgumentException("file name is invalid");
 
         f.setEngineId(engineId);
         f.setName(filename);

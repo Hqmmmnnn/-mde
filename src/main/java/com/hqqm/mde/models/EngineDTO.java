@@ -1,9 +1,11 @@
 package com.hqqm.mde.models;
 
 import com.hqqm.mde.jooq.enums.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class EngineDTO {
     private Long id;
     // general
