@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 @RequestMapping("/auth")
 @AllArgsConstructor
-public class AuthenticationController {
+public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
