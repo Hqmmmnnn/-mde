@@ -1,6 +1,5 @@
 package com.hqqm.mde.lib.FromRequestParamsMappers;
 
-import com.hqqm.mde.jooq.enums.*;
 import com.hqqm.mde.models.Engine;
 import com.hqqm.mde.models.SaveEngineRequestData;
 
@@ -26,25 +25,25 @@ public class FromSaveEngineReqToEngineMapper {
         e.setCylinderDiameter(data.getCylinderDiameter());
         e.setPistonStroke(data.getPistonStroke());
         e.setCompressionRatio(data.getCompressionRatio());
-        e.setInjectionType(StringToEnumConverter.convert(data.getInjectionType(), InjectionTypes.values()));
+        e.setInjectionType(data.getInjectionType());
         e.setInjectionPressure(data.getInjectionPressure());
         e.setCylinderMaxPressure(data.getCylinderMaxPressure());
-        e.setCylinderArrangement(StringToEnumConverter.convert(data.getCylinderArrangement(), ArrangementCylinders.values()));
+        e.setCylinderArrangement(data.getCylinderArrangement());
         e.setCylinderDegrees(data.getCylinderDegrees());
         e.setWeightDryNoImplements(data.getWeightDryNoImplements());
         e.setWeightWithImplements(data.getWeightWithImplements());
-        e.setCoolingSystemType(StringToEnumConverter.convert(data.getCoolingSystemType(), CoolingSystemTypes.values()));
+        e.setCoolingSystemType(data.getCoolingSystemType());
         e.setLength(data.getLength());
         e.setWidth(data.getWidth());
         e.setHeight(data.getHeight());
         e.setOilRate(data.getOilRate());
         e.setOilSystemVolume(data.getOilSystemVolume());
         e.setCoolingSystemVolume(data.getCoolingSystemVolume());
-        e.setImoEcoStandard(StringToEnumConverter.convert(data.getImoEcoStandard(), ImoEcoStandards.values()));
-        e.setEpaEcoStandard(StringToEnumConverter.convert(data.getEpaEcoStandard(), EpaEcoStandards.values()));
-        e.setEuEcoStandard(StringToEnumConverter.convert(data.getEuEcoStandard(), EuEcoStandards.values()));
-        e.setUicEcoStandard(StringToEnumConverter.convert(data.getUicEcoStandard(), UicEcoStandards.values()));
-        e.setVesselType(StringToEnumConverter.convert(data.getVesselType(), VesselTypes.values()));
+        e.setImoEcoStandard(data.getImoEcoStandard());
+        e.setEpaEcoStandard(data.getEpaEcoStandard());
+        e.setEuEcoStandard(data.getEuEcoStandard());
+        e.setUicEcoStandard(data.getUicEcoStandard());
+        e.setVesselType(data.getVesselType());
         e.setClassificationSocietyId(data.getClassificationSocietyId());
         e.setFlangeId(data.getFlangeId());
         return e;

@@ -9,6 +9,7 @@ import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @AllArgsConstructor
@@ -71,8 +72,8 @@ public class JooqEngineRepository implements EngineRepository {
                 e.EPA_ECO_STANDARD,
                 e.EU_ECO_STANDARD,
                 e.UIC_ECO_STANDARD,
-                cs.NAME.as("classificationSociety"),
-                e.VESSEL_TYPE
+                e.VESSEL_TYPE,
+                cs.NAME.as("classificationSociety")
         )
                 .from(e)
                 .leftJoin(m).using(e.MANUFACTURER_ID)
@@ -172,13 +173,11 @@ public class JooqEngineRepository implements EngineRepository {
                       .execute();
     }
 
-    public String findImagePath(Long engineId) {
-        var pathToImage = context
+    public Optional<String> findImagePath(Long engineId) {
+        return context
                 .select(e.PATH_TO_IMAGE)
                 .from(e)
                 .where(e.ENGINE_ID.eq(engineId))
-                .fetchOne();
-
-        return pathToImage.get(e.PATH_TO_IMAGE);
+                .fetchOptionalInto(String.class);
     }
 }

@@ -1,6 +1,5 @@
 package com.hqqm.mde.models;
 
-import com.hqqm.mde.jooq.enums.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -34,11 +33,11 @@ public class EngineDTO {
     private Integer pistonStroke;
     private Float compressionRatio;
     private Integer cylinderMaxPressure;
-    private ArrangementCylinders cylinderArrangement;
+    private String cylinderArrangement;
     private Integer cylinderDegrees;
 
     // injection
-    private InjectionTypes injectionType;
+    private String injectionType;
     private Integer injectionPressure;
 
     // dimensions
@@ -51,7 +50,7 @@ public class EngineDTO {
     private Integer weightWithImplements;
 
     // cooling
-    private CoolingSystemTypes coolingSystemType;
+    private String coolingSystemType;
     private Integer coolingSystemVolume;
 
     // oil
@@ -59,11 +58,11 @@ public class EngineDTO {
     private Integer oilSystemVolume;
 
     // eco standards
-    private ImoEcoStandards imoEcoStandard;
-    private EpaEcoStandards epaEcoStandard;
-    private EuEcoStandards euEcoStandard;
-    private UicEcoStandards uicEcoStandard;
+    private String imoEcoStandard;
+    private String epaEcoStandard;
+    private String euEcoStandard;
+    private String uicEcoStandard;
 
-    private VesselTypes vesselType;
+    private String vesselType;
     private String classificationSociety;
 }

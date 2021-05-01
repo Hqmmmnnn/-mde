@@ -21,4 +21,15 @@ public class JooqUserRepository implements UserRepository {
                 .where(u.EMAIL.eq(email))
                 .fetchOptionalInto(User.class);
     }
+
+    @Override
+    public void save(User user) {
+        context.insertInto(u)
+                .set(u.EMAIL, user.getEmail())
+                .set(u.PASSWORD, user.getPassword())
+                .set(u.FIRST_NAME, user.getFirstName())
+                .set(u.LAST_NAME, user.getLastName())
+                .set(u.ROLE, user.getRole().name())
+                .execute();
+    }
 }

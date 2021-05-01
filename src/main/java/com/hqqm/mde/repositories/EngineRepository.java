@@ -5,11 +5,12 @@ import com.hqqm.mde.models.EngineDTO;
 import org.jooq.Condition;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface EngineRepository {
     List<EngineDTO> getEngines(Condition condition, Long lastFetchedEngineId);
     Long saveEngine(Engine engine);
     void updateEngine(Engine engine);
     int deleteEngine(Long id);
-    String findImagePath(Long engineId);
+    Optional<String> findImagePath(Long engineId);
 }
