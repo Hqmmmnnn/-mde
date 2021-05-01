@@ -1,114 +1,115 @@
 package com.hqqm.mde.services.engine;
 
-import com.hqqm.mde.controllers.engine.EngineRequestParamsForFiltration;
-import com.hqqm.mde.jooq.enums.EpaEcoStandards;
-import com.hqqm.mde.jooq.enums.EuEcoStandards;
-import com.hqqm.mde.jooq.enums.ImoEcoStandards;
-import com.hqqm.mde.jooq.enums.UicEcoStandards;
+import com.hqqm.mde.lib.FromRequestParamsMappers.FromReqListOfStringConverter;
+import com.hqqm.mde.models.RequestParamsForEngineFiltration;
 import com.hqqm.mde.jooq.tables.Engines;
 import com.hqqm.mde.jooq.tables.Flanges;
 import com.hqqm.mde.jooq.tables.Manufacturers;
-import com.hqqm.mde.lib.FromRequestParamsMappers.StringToRangeMapper;
-import com.hqqm.mde.lib.FromRequestParamsMappers.stringToEcoEnumMappers.StringToEpaEnumMapper;
-import com.hqqm.mde.lib.FromRequestParamsMappers.stringToEcoEnumMappers.StringToEuEnumMapper;
-import com.hqqm.mde.lib.FromRequestParamsMappers.stringToEcoEnumMappers.StringToImoEnumMapper;
-import com.hqqm.mde.lib.FromRequestParamsMappers.stringToEcoEnumMappers.StringToUicEnumMapper;
+import com.hqqm.mde.lib.FromRequestParamsMappers.StringToRangeConverter;
+
 import org.jooq.Condition;
 
-import java.util.Optional;
+import java.util.List;
 
 import static org.jooq.impl.DSL.trueCondition;
 
 class EngineFilter {
-    private final EngineRequestParamsForFiltration e;
+    private final RequestParamsForEngineFiltration e;
     private Condition condition;
-    private final Integer lastFetchedEngineId;
+    private final Long lastFetchedEngineId;
 
-    public EngineFilter(EngineRequestParamsForFiltration e) {
+    public EngineFilter(RequestParamsForEngineFiltration e) {
         this.e = e;
         condition = trueCondition();
         lastFetchedEngineId = e.getLastFetchedEngineId() == null ? 0 : e.getLastFetchedEngineId();
     }
 
-    public Integer getLastFetchedEngineId() {
+    public Long getLastFetchedEngineId() {
         return lastFetchedEngineId;
     }
 
     public Condition getCondition() {
         var model = e.getModel();
-        var manufacturerName = e.getManufacturerName();
+        var manufacturerNames = e.getManufacturerNames();
         var powerRating = e.getPowerRating();
         var rotationSpeed = e.getRotationSpeed();
-        var cylinderQuantity = e.getCylinderQuantity();
+        var cylinderQuantity = e.getCylindersQuantity();
         var weightDryNoImplements = e.getWeightDryNoImplements();
         var length = e.getLength();
         var width = e.getWidth();
         var height = e.getHeight();
-        var flangeType = e.getFlangeType();
-        var imoEcoStandard = e.getImoEcoStandard();
-        var epaEcoStandard = e.getEpaEcoStandard();
-        var euEcoStandard = e.getEuEcoStandard();
-        var uicEcoStandard = e.getUicEcoStandard();
+        var flangeTypes = e.getFlangeTypes();
+        var imoEcoStandards = e.getImoEcoStandards();
+        var epaEcoStandards = e.getEpaEcoStandards();
+        var euEcoStandards = e.getEuEcoStandards();
+        var uicEcoStandards = e.getUicEcoStandards();
 
         if (model != null)
-            condition = condition.and(Engines.ENGINES_.MODEL.like("%" + model + "%"));
+            condition = condition.and(Engines.ENGINES_.MODEL.likeIgnoreCase("%" + model + "%"));
 
-        if (manufacturerName != null)
-            condition = condition.and(Manufacturers.MANUFACTURERS.NAME.eq(manufacturerName));
+        if (manufacturerNames != null && manufacturerNames.size() > 0) {
+            List<String> formattedManufacturers = FromReqListOfStringConverter.toFormattedStrings(manufacturerNames);
+            condition = condition.and(Manufacturers.MANUFACTURERS.NAME.in(formattedManufacturers));
+        }
 
         if (powerRating != null) {
-            int[] range = StringToRangeMapper.convert(powerRating);
+            int[] range = StringToRangeConverter.convert(powerRating);
             condition = condition.and(Engines.ENGINES_.POWER_RATING.between(range[0]).and(range[1]));
         }
 
-        if (rotationSpeed != null) {
-            condition = condition.and(Engines.ENGINES_.ROTATION_SPEED.eq(rotationSpeed));
+        if (rotationSpeed != null && rotationSpeed.size() > 0) {
+            List<Integer> rotations = FromReqListOfStringConverter.toIntegers(rotationSpeed);
+            condition = condition.and(Engines.ENGINES_.ROTATION_SPEED.in(rotations));
         }
 
-        if (cylinderQuantity != null)
-            condition = condition.and(Engines.ENGINES_.CYLINDER_QUANTITY.eq(cylinderQuantity));
+        if (cylinderQuantity != null && cylinderQuantity.size() > 0) {
+            List<Integer> cylinders = FromReqListOfStringConverter.toIntegers(cylinderQuantity);
+            condition = condition.and(Engines.ENGINES_.CYLINDER_QUANTITY.in(cylinders));
+        }
 
         if (weightDryNoImplements != null) {
-            int[] range = StringToRangeMapper.convert(weightDryNoImplements);
+            int[] range = StringToRangeConverter.convert(weightDryNoImplements);
             condition = condition.and(Engines.ENGINES_.WEIGHT_DRY_NO_IMPLEMENTS.between(range[0]).and(range[1]));
         }
 
         if (length != null) {
-            int[] range = StringToRangeMapper.convert(length);
+            int[] range = StringToRangeConverter.convert(length);
             condition = condition.and(Engines.ENGINES_.LENGTH.between(range[0]).and(range[1]));
         }
 
         if (width != null) {
-            int[] range = StringToRangeMapper.convert(width);
+            int[] range = StringToRangeConverter.convert(width);
             condition = condition.and(Engines.ENGINES_.WIDTH.between(range[0]).and(range[1]));
         }
 
         if (height != null) {
-            int[] range = StringToRangeMapper.convert(height);
+            int[] range = StringToRangeConverter.convert(height);
             condition = condition.and(Engines.ENGINES_.HEIGHT.between(range[0]).and(range[1]));
         }
 
-        if (flangeType != null)
-            condition = condition.and(Flanges.FLANGES.TYPE.eq(flangeType));
-
-        if (imoEcoStandard != null) {
-            Optional<ImoEcoStandards> imo = StringToImoEnumMapper.convert(imoEcoStandard);
-            imo.ifPresent(imoEcoStandards -> condition = condition.and(Engines.ENGINES_.IMO_ECO_STANDARD.eq(imoEcoStandards)));
+        if (flangeTypes != null && flangeTypes.size() > 0) {
+            List<String> formattedFlangeTypes = FromReqListOfStringConverter.toFormattedStrings(flangeTypes);
+            condition = condition.and(Flanges.FLANGES.TYPE.in(formattedFlangeTypes));
         }
 
-        if (epaEcoStandard != null) {
-            Optional<EpaEcoStandards> epa = StringToEpaEnumMapper.convert(epaEcoStandard);
-            epa.ifPresent(epaEcoStandards -> condition = condition.and(Engines.ENGINES_.EPA_ECO_STANDARD.eq(epaEcoStandards)));
+        if (imoEcoStandards != null && imoEcoStandards.size() > 0) {
+            List<String> formattedImoEcoStandards = FromReqListOfStringConverter.toFormattedStrings(imoEcoStandards);
+            condition = condition.and(Engines.ENGINES_.IMO_ECO_STANDARD.in(formattedImoEcoStandards));
         }
 
-        if (euEcoStandard != null) {
-            Optional<EuEcoStandards> eu = StringToEuEnumMapper.convert(euEcoStandard);
-            eu.ifPresent(euEcoStandards -> condition = condition.and(Engines.ENGINES_.EU_ECO_STANDARD.eq(euEcoStandards)));
+        if (epaEcoStandards != null && epaEcoStandards.size() > 0) {
+            List<String> formattedEpaEcoStandards = FromReqListOfStringConverter.toFormattedStrings(epaEcoStandards);
+            condition = condition.and(Engines.ENGINES_.EPA_ECO_STANDARD.in(formattedEpaEcoStandards));
         }
 
-        if (uicEcoStandard != null) {
-            Optional<UicEcoStandards> uic = StringToUicEnumMapper.convert(uicEcoStandard);
-            uic.ifPresent(uicEcoStandards -> condition = condition.and(Engines.ENGINES_.UIC_ECO_STANDARD.eq(uicEcoStandards)));
+        if (euEcoStandards != null && euEcoStandards.size() > 0) {
+            List<String>  formattedEuEcoStandards = FromReqListOfStringConverter.toFormattedStrings(euEcoStandards);
+            condition = condition.and(Engines.ENGINES_.EU_ECO_STANDARD.in(formattedEuEcoStandards));
+        }
+
+        if (uicEcoStandards != null && uicEcoStandards.size() > 0) {
+            List<String> formattedUicEcoStandards = FromReqListOfStringConverter.toFormattedStrings(uicEcoStandards);
+            condition = condition.and(Engines.ENGINES_.UIC_ECO_STANDARD.in(formattedUicEcoStandards));
         }
 
         return condition;

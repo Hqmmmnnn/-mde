@@ -2,14 +2,13 @@ package com.hqqm.mde.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
-public class Engine {
+public class SaveEngineRequestData {
     private Long engineId;
     private Integer manufacturerId;
     private String series;
@@ -50,6 +49,6 @@ public class Engine {
     private String vesselType;
     private Integer classificationSocietyId;
     private Integer flangeId;
-    private List<FileEntity> files;
-    private String pathToImage;
+    private List<MultipartFile> files;
+    private MultipartFile image;
 }

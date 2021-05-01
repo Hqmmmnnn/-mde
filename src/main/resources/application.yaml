@@ -6,3 +6,24 @@ spring:
     username: postgres
     password: start
     driver-class-name: org.postgresql.Driver
+
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 200MB
+      max-request-size: 215MB
+
+file:
+  upload:
+    location: /home/hqqm/mde/uploads
+    tmpLocation: /home/hqqm/mde/temp
+    imagesLocation: /home/hqqm/mde/images
+
+jwt:
+  header: Authorization
+  secret: mde
+  expiration: 604800
+
+server:
+  port: 8001
