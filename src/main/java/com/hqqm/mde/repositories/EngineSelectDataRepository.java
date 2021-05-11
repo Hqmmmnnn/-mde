@@ -7,6 +7,10 @@ public interface EngineSelectDataRepository {
     List<EngineSelectData> getManufacturersData();
     List<EngineSelectData> getRotationFrequenciesData();
     List<EngineSelectData> getCylindersQuantityData();
+    List<EngineSelectData> getCylinderArrangementsData();
+    List<EngineSelectData> getInjectionTypesData();
+    List<EngineSelectData> getVesselTypesData();
+    List<EngineSelectData> getCoolingSystemTypesData();
     List<EngineSelectData> getImoEcoStandardsData();
     List<EngineSelectData> getEpaEcoStandardsData();
     List<EngineSelectData> getEuEcoStandardsData();

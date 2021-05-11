@@ -47,6 +47,50 @@ public class JooqEngineSelectDataRepository implements EngineSelectDataRepositor
     }
 
     @Override
+    public List<EngineSelectData> getCylinderArrangementsData() {
+        CylinderArrangements ca = CylinderArrangements.CYLINDER_ARRANGEMENTS;
+
+        return context
+                .select(ca.CYLINDER_ARRANGEMENT_ID.as("id"), ca.ARRANGEMENT.as("value"))
+                .from(ca)
+                .fetch()
+                .into(EngineSelectData.class);
+    }
+
+    @Override
+    public List<EngineSelectData> getInjectionTypesData() {
+        InjectionTypes it = InjectionTypes.INJECTION_TYPES;
+
+        return context
+                .select(it.INJECTION_TYPE_ID.as("id"), it.TYPE.as("value"))
+                .from(it)
+                .fetch()
+                .into(EngineSelectData.class);
+    }
+
+    @Override
+    public List<EngineSelectData> getVesselTypesData() {
+        VesselTypes vt = VesselTypes.VESSEL_TYPES;
+
+        return context
+                .select(vt.VESSEL_TYPE_ID.as("id"), vt.TYPE.as("value"))
+                .from(vt)
+                .fetch()
+                .into(EngineSelectData.class);
+    }
+
+    @Override
+    public List<EngineSelectData> getCoolingSystemTypesData() {
+        CoolingSystemTypes cst = CoolingSystemTypes.COOLING_SYSTEM_TYPES;
+
+        return context
+                .select(cst.COOLING_SYSTEM_TYPE_ID.as("id"), cst.TYPE.as("value"))
+                .from(cst)
+                .fetch()
+                .into(EngineSelectData.class);
+    }
+
+    @Override
     public List<EngineSelectData> getImoEcoStandardsData() {
         ImoEcoStandard imo = ImoEcoStandard.IMO_ECO_STANDARD;
 

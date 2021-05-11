@@ -29,14 +29,14 @@ public class Engine {
     private Integer cylinderDiameter;
     private Integer pistonStroke;
     private Float compressionRatio;
-    private String injectionType;
+    private Integer injectionTypeId;
     private Integer injectionPressure;
     private Integer cylinderMaxPressure;
-    private String cylinderArrangement;
+    private Integer cylinderArrangementId;
     private Integer cylinderDegrees;
     private Integer weightDryNoImplements;
     private Integer weightWithImplements;
-    private String coolingSystemType;
+    private Integer coolingSystemTypeId;
     private Integer length;
     private Integer width;
     private Integer height;
@@ -47,7 +47,7 @@ public class Engine {
     private Integer epaEcoStandardId;
     private Integer euEcoStandardId;
     private Integer uicEcoStandardId;
-    private String vesselType;
+    private Integer vesselTypeId;
     private Integer classificationSocietyId;
     private Integer flangeId;
     private List<FileEntity> files;

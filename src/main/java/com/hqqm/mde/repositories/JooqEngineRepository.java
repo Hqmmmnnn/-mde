@@ -21,6 +21,10 @@ public class JooqEngineRepository implements EngineRepository {
 
     private final Engines e = Engines.ENGINES_;
     private final CylinderQuantity cq = CylinderQuantity.CYLINDER_QUANTITY;
+    private final CylinderArrangements cylinderArrangements = CylinderArrangements.CYLINDER_ARRANGEMENTS;
+    private final InjectionTypes injectionTypes = InjectionTypes.INJECTION_TYPES;
+    private final VesselTypes vesselTypes = VesselTypes.VESSEL_TYPES;
+    private final CoolingSystemTypes coolingSystemTypes = CoolingSystemTypes.COOLING_SYSTEM_TYPES;
     private final RotationFrequency rf = RotationFrequency.ROTATION_FREQUENCY;
     private final ImoEcoStandard imo = ImoEcoStandard.IMO_ECO_STANDARD;
     private final EpaEcoStandard epa = EpaEcoStandard.EPA_ECO_STANDARD;
@@ -54,10 +58,10 @@ public class JooqEngineRepository implements EngineRepository {
                 e.PISTON_STROKE,
                 e.COMPRESSION_RATIO,
                 e.CYLINDER_MAX_PRESSURE,
-                e.CYLINDER_ARRANGEMENT,
+                cylinderArrangements.ARRANGEMENT.as("cylinderArrangement"),
                 e.CYLINDER_DEGREES,
                 // injection
-                e.INJECTION_TYPE,
+                injectionTypes.TYPE.as("injectionType"),
                 e.INJECTION_PRESSURE,
                 // dimensions
                 e.LENGTH,
@@ -66,7 +70,7 @@ public class JooqEngineRepository implements EngineRepository {
                 // weight
                 e.WEIGHT_DRY_NO_IMPLEMENTS,
                 // cooling
-                e.COOLING_SYSTEM_TYPE,
+                coolingSystemTypes.TYPE.as("coolingSystemType"),
                 e.COOLING_SYSTEM_VOLUME,
                 // oil
                 e.OIL_RATE,
@@ -76,11 +80,15 @@ public class JooqEngineRepository implements EngineRepository {
                 epa.QUOTE_NAME.as("epaEcoStandard"),
                 eu.QUOTE_NAME.as("euEcoStandard"),
                 uic.QUOTE_NAME.as("uicEcoStandard"),
-                e.VESSEL_TYPE,
+                vesselTypes.TYPE.as("vesselType"),
                 cs.NAME.as("classificationSociety")
         )
                 .from(e)
                 .leftJoin(cq).using(e.CYLINDER_QUANTITY_ID)
+                .leftJoin(cylinderArrangements).using(e.CYLINDER_ARRANGEMENT_ID)
+                .leftJoin(injectionTypes).using(e.INJECTION_TYPE_ID)
+                .leftJoin(vesselTypes).using(e.VESSEL_TYPE_ID)
+                .leftJoin(coolingSystemTypes).using(e.COOLING_SYSTEM_TYPE_ID)
                 .leftJoin(rf).using(e.ROTATION_FREQUENCY_ID)
                 .leftJoin(imo).using(e.IMO_ECO_STANDARD_ID)
                 .leftJoin(epa).using(e.EPA_ECO_STANDARD_ID)
@@ -127,10 +135,10 @@ public class JooqEngineRepository implements EngineRepository {
                 e.PISTON_STROKE,
                 e.COMPRESSION_RATIO,
                 e.CYLINDER_MAX_PRESSURE,
-                e.CYLINDER_ARRANGEMENT,
+                cylinderArrangements.ARRANGEMENT,
                 e.CYLINDER_DEGREES,
                 // injection
-                e.INJECTION_TYPE,
+                injectionTypes.TYPE,
                 e.INJECTION_PRESSURE,
                 // dimensions
                 e.LENGTH,
@@ -140,7 +148,7 @@ public class JooqEngineRepository implements EngineRepository {
                 e.WEIGHT_DRY_NO_IMPLEMENTS,
                 e.WEIGHT_WITH_IMPLEMENTS,
                 // cooling
-                e.COOLING_SYSTEM_TYPE,
+                coolingSystemTypes.TYPE,
                 e.COOLING_SYSTEM_VOLUME,
                 // oil
                 e.OIL_RATE,
@@ -150,10 +158,14 @@ public class JooqEngineRepository implements EngineRepository {
                 epa.QUOTE_NAME,
                 eu.QUOTE_NAME,
                 uic.QUOTE_NAME,
-                e.VESSEL_TYPE,
+                vesselTypes.TYPE,
                 cs.NAME)
                 .from(e)
                 .leftJoin(cq).using(e.CYLINDER_QUANTITY_ID)
+                .leftJoin(cylinderArrangements).using(e.CYLINDER_ARRANGEMENT_ID)
+                .leftJoin(injectionTypes).using(e.INJECTION_TYPE_ID)
+                .leftJoin(vesselTypes).using(e.VESSEL_TYPE_ID)
+                .leftJoin(coolingSystemTypes).using(e.COOLING_SYSTEM_TYPE_ID)
                 .leftJoin(rf).using(e.ROTATION_FREQUENCY_ID)
                 .leftJoin(imo).using(e.IMO_ECO_STANDARD_ID)
                 .leftJoin(epa).using(e.EPA_ECO_STANDARD_ID)
@@ -206,7 +218,7 @@ public class JooqEngineRepository implements EngineRepository {
         var pistonStroke = new EngineInfoRow("Ход поршня, мм", res.getValue(e.PISTON_STROKE));
         var compressionRation = new EngineInfoRow("Степень сжатия", res.getValue(e.COMPRESSION_RATIO));
         var cylinderMaxPressure = new EngineInfoRow("Макс. давление (Pz), bar", res.getValue(e.CYLINDER_MAX_PRESSURE));
-        var cylinderArrangement = new EngineInfoRow("Расположение", res.getValue(e.CYLINDER_ARRANGEMENT));
+        var cylinderArrangement = new EngineInfoRow("Расположение", res.getValue(cylinderArrangements.ARRANGEMENT));
         var cylinderDegrees = new EngineInfoRow("Развал, град", res.getValue(e.CYLINDER_DEGREES));
         String cylinderBlockName = "Цилиндр";
         var cylinderBlock = new EngineInfoTable(
@@ -215,7 +227,7 @@ public class JooqEngineRepository implements EngineRepository {
                               compressionRation, cylinderMaxPressure, cylinderArrangement, cylinderDegrees)
         );
 
-        var injectionType = new EngineInfoRow("Тип", res.getValue(e.INJECTION_TYPE));
+        var injectionType = new EngineInfoRow("Тип", res.getValue(injectionTypes.TYPE));
         var injectionPressure = new EngineInfoRow("Давление, бар", res.getValue(e.INJECTION_PRESSURE));
         String injectionBlockName = "Впрыск";
         var injectionBlock = new EngineInfoTable(injectionBlockName, Arrays.asList(injectionType, injectionPressure));
@@ -231,7 +243,7 @@ public class JooqEngineRepository implements EngineRepository {
         String weightBlockName = "Масса, кг";
         var weightBlock = new EngineInfoTable(weightBlockName, Arrays.asList(weightDryNoImplements, weightWithImplements));
 
-        var coolingSystemType = new EngineInfoRow("Тип", res.getValue(e.COOLING_SYSTEM_TYPE));
+        var coolingSystemType = new EngineInfoRow("Тип", res.getValue(coolingSystemTypes.TYPE));
         var coolingSystemVolume = new EngineInfoRow("Объем, л", res.getValue(e.COOLING_SYSTEM_VOLUME));
         String coolingSystemBlockName = "Охлаждение";
         var coolingSystemBlock = new EngineInfoTable(coolingSystemBlockName, Arrays.asList(coolingSystemType, coolingSystemVolume));
@@ -251,7 +263,7 @@ public class JooqEngineRepository implements EngineRepository {
                 Arrays.asList(imoEcoStandard, epaEcoStandard, euEcoStandard, uicEcoStandard)
         );
 
-        var vesselType = new EngineInfoRow("Тип судна", res.getValue(e.VESSEL_TYPE));
+        var vesselType = new EngineInfoRow("Тип судна", res.getValue(vesselTypes.TYPE));
         var classificationSociety = new EngineInfoRow("Классифиционное общество", res.getValue(cs.NAME));
         String otherBlockName = "Другое";
         var otherBlock = new EngineInfoTable(otherBlockName, Arrays.asList(vesselType, classificationSociety));
@@ -269,23 +281,23 @@ public class JooqEngineRepository implements EngineRepository {
                         e.OPERATING_TIME_YEAR, e.OPERATING_TIME_FIRST_TS, e.OPERATING_TIME_TO_REPAIR,
                         e.POWER_RATING, e.ROTATION_FREQUENCY_ID, e.TORQUE_MAX, e.FUEL_RATE,
                         e.FUEL_RATE_NOMINAL_POWER, e.CYLINDER_WORKING_VOLUME, e.CYLINDER_QUANTITY_ID,
-                        e.CYLINDER_DIAMETER, e.PISTON_STROKE, e.COMPRESSION_RATIO, e.INJECTION_TYPE,
-                        e.INJECTION_PRESSURE, e.CYLINDER_MAX_PRESSURE, e.CYLINDER_ARRANGEMENT,
+                        e.CYLINDER_DIAMETER, e.PISTON_STROKE, e.COMPRESSION_RATIO, e.INJECTION_TYPE_ID,
+                        e.INJECTION_PRESSURE, e.CYLINDER_MAX_PRESSURE, e.CYLINDER_ARRANGEMENT_ID,
                         e.CYLINDER_DEGREES, e.WEIGHT_DRY_NO_IMPLEMENTS, e.WEIGHT_WITH_IMPLEMENTS,
-                        e.COOLING_SYSTEM_TYPE, e.LENGTH, e.WIDTH, e.HEIGHT,
+                        e.COOLING_SYSTEM_TYPE_ID, e.LENGTH, e.WIDTH, e.HEIGHT,
                         e.OIL_RATE, e.OIL_SYSTEM_VOLUME, e.COOLING_SYSTEM_VOLUME, e.IMO_ECO_STANDARD_ID,
-                        e.EPA_ECO_STANDARD_ID, e.EU_ECO_STANDARD_ID, e.UIC_ECO_STANDARD_ID, e.VESSEL_TYPE,
+                        e.EPA_ECO_STANDARD_ID, e.EU_ECO_STANDARD_ID, e.UIC_ECO_STANDARD_ID, e.VESSEL_TYPE_ID,
                         e.CLASSIFICATION_SOCIETY_ID, e.FLANGE_ID, e.PATH_TO_IMAGE)
                 .values(engine.getManufacturerId(), engine.getSeries(), engine.getModel(), engine.getAssignmentId(), engine.getEngineRatingId(),
                         engine.getOperatingTimeYear(), engine.getOperatingTimeFirstTs(), engine.getOperatingTimeToRepair(),
                         engine.getPowerRating(), engine.getRotationFrequencyId(), engine.getTorqueMax(), engine.getFuelRate(),
                         engine.getFuelRateNominalPower(), engine.getCylinderWorkingVolume(), engine.getCylinderQuantityId(),
-                        engine.getCylinderDiameter(), engine.getPistonStroke(), engine.getCompressionRatio(), engine.getInjectionType(),
-                        engine.getInjectionPressure(), engine.getCylinderMaxPressure(), engine.getCylinderArrangement(),
+                        engine.getCylinderDiameter(), engine.getPistonStroke(), engine.getCompressionRatio(), engine.getInjectionTypeId(),
+                        engine.getInjectionPressure(), engine.getCylinderMaxPressure(), engine.getCylinderArrangementId(),
                         engine.getCylinderDegrees(), engine.getWeightDryNoImplements(), engine.getWeightWithImplements(),
-                        engine.getCoolingSystemType(), engine.getLength(), engine.getWidth(), engine.getHeight(),
+                        engine.getCoolingSystemTypeId(), engine.getLength(), engine.getWidth(), engine.getHeight(),
                         engine.getOilRate(), engine.getOilSystemVolume(), engine.getCoolingSystemVolume(), engine.getImoEcoStandardId(),
-                        engine.getEpaEcoStandardId(), engine.getEuEcoStandardId(), engine.getUicEcoStandardId(), engine.getVesselType(),
+                        engine.getEpaEcoStandardId(), engine.getEuEcoStandardId(), engine.getUicEcoStandardId(), engine.getVesselTypeId(),
                         engine.getClassificationSocietyId(), engine.getFlangeId(), engine.getPathToImage())
                 .returningResult(e.ENGINE_ID)
                 .fetchOne();
@@ -313,14 +325,14 @@ public class JooqEngineRepository implements EngineRepository {
                 .set(e.CYLINDER_DIAMETER, engine.getCylinderDiameter())
                 .set(e.PISTON_STROKE, engine.getPistonStroke())
                 .set(e.COMPRESSION_RATIO, engine.getCompressionRatio())
-                .set(e.INJECTION_TYPE, engine.getInjectionType())
+                .set(e.INJECTION_TYPE_ID, engine.getInjectionTypeId())
                 .set(e.INJECTION_PRESSURE, engine.getInjectionPressure())
                 .set(e.CYLINDER_MAX_PRESSURE, engine.getCylinderMaxPressure())
-                .set(e.CYLINDER_ARRANGEMENT, engine.getCylinderArrangement())
+                .set(e.CYLINDER_ARRANGEMENT_ID, engine.getCylinderArrangementId())
                 .set(e.CYLINDER_DEGREES, engine.getCylinderDegrees())
                 .set(e.WEIGHT_DRY_NO_IMPLEMENTS, engine.getWeightDryNoImplements())
                 .set(e.WEIGHT_WITH_IMPLEMENTS, engine.getWeightWithImplements())
-                .set(e.COOLING_SYSTEM_TYPE, engine.getCoolingSystemType())
+                .set(e.COOLING_SYSTEM_TYPE_ID, engine.getCoolingSystemTypeId())
                 .set(e.LENGTH, engine.getLength())
                 .set(e.WIDTH, engine.getWidth())
                 .set(e.HEIGHT, engine.getHeight())
@@ -331,7 +343,7 @@ public class JooqEngineRepository implements EngineRepository {
                 .set(e.EPA_ECO_STANDARD_ID, engine.getEpaEcoStandardId())
                 .set(e.EU_ECO_STANDARD_ID, engine.getEuEcoStandardId())
                 .set(e.UIC_ECO_STANDARD_ID, engine.getUicEcoStandardId())
-                .set(e.VESSEL_TYPE, engine.getVesselType())
+                .set(e.VESSEL_TYPE_ID, engine.getVesselTypeId())
                 .set(e.CLASSIFICATION_SOCIETY_ID, engine.getClassificationSocietyId())
                 .set(e.FLANGE_ID, engine.getFlangeId())
                 .set(e.PATH_TO_IMAGE, engine.getPathToImage())
@@ -354,3 +366,4 @@ public class JooqEngineRepository implements EngineRepository {
                 .fetchOptionalInto(String.class);
     }
 }
+

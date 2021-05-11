@@ -25,14 +25,14 @@ public class FromSaveEngineReqToEngineMapper {
         e.setCylinderDiameter(data.getCylinderDiameter());
         e.setPistonStroke(data.getPistonStroke());
         e.setCompressionRatio(data.getCompressionRatio());
-        e.setInjectionType(data.getInjectionType());
+        e.setInjectionTypeId(data.getInjectionTypeId());
         e.setInjectionPressure(data.getInjectionPressure());
         e.setCylinderMaxPressure(data.getCylinderMaxPressure());
-        e.setCylinderArrangement(data.getCylinderArrangement());
+        e.setCylinderArrangementId(data.getCylinderArrangementId());
         e.setCylinderDegrees(data.getCylinderDegrees());
         e.setWeightDryNoImplements(data.getWeightDryNoImplements());
         e.setWeightWithImplements(data.getWeightWithImplements());
-        e.setCoolingSystemType(data.getCoolingSystemType());
+        e.setCoolingSystemTypeId(data.getCoolingSystemTypeId());
         e.setLength(data.getLength());
         e.setWidth(data.getWidth());
         e.setHeight(data.getHeight());
@@ -43,7 +43,7 @@ public class FromSaveEngineReqToEngineMapper {
         e.setEpaEcoStandardId(data.getEpaEcoStandardId());
         e.setEuEcoStandardId(data.getEuEcoStandardId());
         e.setUicEcoStandardId(data.getUicEcoStandardId());
-        e.setVesselType(data.getVesselType());
+        e.setVesselTypeId(data.getVesselTypeId());
         e.setClassificationSocietyId(data.getClassificationSocietyId());
         e.setFlangeId(data.getFlangeId());
         return e;

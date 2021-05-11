@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-public class EngineDataController {
+public class EngineSelectDataController {
     private final EngineSelectDataService engineSelectDataService;
 
     @GetMapping("/manufacturersData")
@@ -26,6 +26,26 @@ public class EngineDataController {
     @GetMapping("/cylindersQuantityData")
     public List<EngineSelectData> getCylindersQuantityData() {
         return engineSelectDataService.getCylindersQuantityData();
+    }
+
+    @GetMapping("/cylinderArrangementsData")
+    public List<EngineSelectData> getCylinderArrangementsData() {
+        return engineSelectDataService.getCylinderArrangementsData();
+    }
+
+    @GetMapping("/injectionTypesData")
+    public List<EngineSelectData> getInjectionTypesData() {
+        return engineSelectDataService.getInjectionTypesData();
+    }
+
+    @GetMapping("/vesselTypesData")
+    public List<EngineSelectData> getVesselTypesData() {
+        return engineSelectDataService.getVesselTypesData();
+    }
+
+    @GetMapping("/coolingSystemTypesData")
+    public List<EngineSelectData> getCoolingSystemTypesData() {
+        return engineSelectDataService.getCoolingSystemTypesData();
     }
 
     @GetMapping("/imoEcoStandardsData")

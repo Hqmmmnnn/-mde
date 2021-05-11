@@ -28,6 +28,26 @@ public class EngineSelectDataServiceImpl implements EngineSelectDataService {
     }
 
     @Override
+    public List<EngineSelectData> getCylinderArrangementsData() {
+        return engineSelectDataRepository.getCylinderArrangementsData();
+    }
+
+    @Override
+    public List<EngineSelectData> getInjectionTypesData() {
+        return engineSelectDataRepository.getInjectionTypesData();
+    }
+
+    @Override
+    public List<EngineSelectData> getVesselTypesData() {
+        return engineSelectDataRepository.getVesselTypesData();
+    }
+
+    @Override
+    public List<EngineSelectData> getCoolingSystemTypesData() {
+        return engineSelectDataRepository.getCoolingSystemTypesData();
+    }
+
+    @Override
     public List<EngineSelectData> getImoEcoStandardsData() {
         return engineSelectDataRepository.getImoEcoStandardsData();
     }
