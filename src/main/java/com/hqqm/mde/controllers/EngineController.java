@@ -1,8 +1,6 @@
 package com.hqqm.mde.controllers;
 
-import com.hqqm.mde.models.EngineDTO;
-import com.hqqm.mde.models.RequestParamsForEngineFiltration;
-import com.hqqm.mde.models.SaveEngineRequestData;
+import com.hqqm.mde.models.*;
 import com.hqqm.mde.services.engine.EngineFacade;
 import com.hqqm.mde.services.engine.EngineService;
 import lombok.AllArgsConstructor;
@@ -19,6 +17,11 @@ public class EngineController {
     @GetMapping("/engines")
     public List<EngineDTO> getEngines(RequestParamsForEngineFiltration engineParams) {
         return engineService.getEngines(engineParams);
+    }
+
+    @GetMapping("/engines/{id}")
+    public List<EngineInfoTable> getEngine(@PathVariable Long id) {
+        return engineService.getEngine(id);
     }
 
     @PostMapping("/engines")

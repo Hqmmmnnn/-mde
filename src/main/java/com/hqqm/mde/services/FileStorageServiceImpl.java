@@ -13,7 +13,6 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.swing.text.html.Option;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -58,6 +57,10 @@ public class FileStorageServiceImpl implements FileStorageService {
         catch (Exception ex) {
             throw new FileStorageException("Could not create upload dir!");
         }
+    }
+
+    public List<String> getFileNames(Long engineId) {
+        return fileRepository.getFileNames(engineId);
     }
 
     public void saveFilesMetadataInDB(List<MultipartFile> files, Long engineId) {

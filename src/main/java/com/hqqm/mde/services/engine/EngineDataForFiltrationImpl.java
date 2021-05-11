@@ -29,8 +29,8 @@ public class EngineDataForFiltrationImpl implements EngineDataForFiltrationServi
     }
 
     @Override
-    public List<CheckboxDTO> getRotationSpeed() {
-        return engineDataForFiltrationRepository.getRotationSpeed();
+    public List<CheckboxDTO> getRotationFrequencies() {
+        return engineDataForFiltrationRepository.getRotationFrequencies();
     }
 
     @Override

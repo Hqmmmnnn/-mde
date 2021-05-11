@@ -18,6 +18,11 @@ public class EngineServiceImpl implements EngineService {
         return engineRepository.getEngines(engineFilter.getCondition(), engineFilter.getLastFetchedEngineId());
     }
 
+    @Override
+    public List<EngineInfoTable> getEngine(Long id) {
+        return engineRepository.getEngine(id);
+    }
+
     public Long saveEngine(Engine engine) {
         return engineRepository.saveEngine(engine);
     }

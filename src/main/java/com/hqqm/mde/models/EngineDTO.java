@@ -2,15 +2,17 @@ package com.hqqm.mde.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class EngineDTO {
     private Long id;
     // general
     private String model;
     private Integer powerRating;
-    private Integer rotationSpeed;
+    private Integer rotationFrequency;
     private String manufacturerName;
     private Integer torqueMax;
     private String assignment;

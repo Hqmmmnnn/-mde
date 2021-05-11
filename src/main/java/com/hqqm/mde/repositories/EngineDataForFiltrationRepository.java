@@ -9,7 +9,7 @@ public interface EngineDataForFiltrationRepository {
     List<CheckboxDTO> getFlangeTypes();
     List<CheckboxDTO> getCylinderQuantity();
     List<CheckboxDTO> getManufacturers();
-    List<CheckboxDTO> getRotationSpeed();
+    List<CheckboxDTO> getRotationFrequencies();
     List<CheckboxDTO> getImoEcoStandards();
     List<CheckboxDTO> getEpaEcoStandards();
     List<CheckboxDTO> getEuEcoStandards();

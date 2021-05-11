@@ -15,6 +15,15 @@ public class JooqFileRepository implements FileRepository {
     private final DSLContext context;
     private final Files f = Files.FILES;
 
+    public List<String> getFileNames(Long engineId) {
+        return context
+                .select(f.NAME)
+                .from(f)
+                .where(f.ENGINE_ID.eq(engineId))
+                .fetch()
+                .into(String.class);
+    }
+
     public void saveFiles(List<FileEntity> files) {
         BatchBindStep batch = context
                 .batch(context.insertInto(f, f.ENGINE_ID, f.NAME, f.LOCATION, f.CONTENT_TYPE)

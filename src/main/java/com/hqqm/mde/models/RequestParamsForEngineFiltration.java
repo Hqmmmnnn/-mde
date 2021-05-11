@@ -11,7 +11,7 @@ public class RequestParamsForEngineFiltration {
     private String model;
     private List<String> manufacturerNames;
     private String powerRating;
-    private List<String>rotationSpeed;
+    private List<String> rotationFrequencies;
     private List<String> cylindersQuantity;
     private String weightDryNoImplements;
     private String length;

@@ -14,7 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,7 +36,7 @@ public class EngineFacade {
         Long engineId = engineService.saveEngine(engine);
 
         List<MultipartFile> files = saveEngineRequestData.getFiles();
-        if (files != null) {
+        if (files != null && files.stream().allMatch(file -> file.getSize() > 0)) {
             Path mainDir = fileStorageService.getDirLocation();
             List<Path> filePaths = files.stream()
                     .map(file -> mainDir.resolve(file.getOriginalFilename()))
@@ -64,7 +66,7 @@ public class EngineFacade {
         TransactionSynchronizationManager.registerSynchronization(imageResolver);
 
         List<MultipartFile> files = saveEngineRequestData.getFiles();
-        if (files != null) {
+        if (files != null && files.stream().allMatch(file -> file.getSize() > 0)) {
             List<String> filenames = files.stream()
                     .map(MultipartFile::getOriginalFilename)
                     .collect(Collectors.toList());
