@@ -8,10 +8,17 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @AllArgsConstructor
 public class FileController {
     FileStorageService fileStorageService;
+
+    @GetMapping("/filenames/{engineId}")
+    public List<String> getFileNames(@PathVariable Long engineId) {
+        return fileStorageService.getFileNames(engineId);
+    }
 
     @GetMapping("/download/{filename:.+}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String filename) {

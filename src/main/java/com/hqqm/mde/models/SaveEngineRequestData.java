@@ -2,12 +2,14 @@ package com.hqqm.mde.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class SaveEngineRequestData {
     private Long engineId;
     private Integer manufacturerId;
@@ -19,12 +21,12 @@ public class SaveEngineRequestData {
     private Integer operatingTimeFirstTs;
     private Integer operatingTimeToRepair;
     private Integer powerRating;
-    private Integer rotationSpeed;
+    private Integer rotationFrequencyId;
     private Integer torqueMax;
     private Integer fuelRate;
     private Float fuelRateNominalPower;
     private Float cylinderWorkingVolume;
-    private Integer cylinderQuantity;
+    private Integer cylinderQuantityId;
     private Integer cylinderDiameter;
     private Integer pistonStroke;
     private Float compressionRatio;
@@ -42,10 +44,10 @@ public class SaveEngineRequestData {
     private Float oilRate;
     private Integer oilSystemVolume;
     private Integer coolingSystemVolume;
-    private String imoEcoStandard;
-    private String epaEcoStandard;
-    private String euEcoStandard;
-    private String uicEcoStandard;
+    private Integer imoEcoStandardId;
+    private Integer epaEcoStandardId;
+    private Integer euEcoStandardId;
+    private Integer uicEcoStandardId;
     private String vesselType;
     private Integer classificationSocietyId;
     private Integer flangeId;

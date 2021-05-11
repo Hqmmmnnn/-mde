@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 public interface FileStorageService {
+    List<String> getFileNames(Long engineId);
     void saveFilesMetadataInDB(List<MultipartFile> files, Long engineId);
     void saveFilesInFileSystem(List<MultipartFile> files);
     void updateFilesInFileSystem(List<MultipartFile> files);

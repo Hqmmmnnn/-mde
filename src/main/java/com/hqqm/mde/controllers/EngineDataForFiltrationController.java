@@ -29,9 +29,9 @@ public class EngineDataForFiltrationController {
         return engineDataForFiltrationService.getManufacturers();
     }
 
-    @GetMapping("/rotationSpeed")
-    public List<CheckboxDTO> getRotationSpeed() {
-        return engineDataForFiltrationService.getRotationSpeed();
+    @GetMapping("/rotationFrequencies")
+    public List<CheckboxDTO> getRotationFrequency() {
+        return engineDataForFiltrationService.getRotationFrequencies();
     }
 
     @GetMapping("/imoEcoStandards")
