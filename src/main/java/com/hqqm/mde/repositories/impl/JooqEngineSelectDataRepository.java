@@ -1,7 +1,8 @@
-package com.hqqm.mde.repositories;
+package com.hqqm.mde.repositories.impl;
 
 import com.hqqm.mde.jooq.tables.*;
 import com.hqqm.mde.models.EngineSelectData;
+import com.hqqm.mde.repositories.EngineSelectDataRepository;
 import lombok.AllArgsConstructor;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;

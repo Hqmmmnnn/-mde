@@ -1,8 +1,9 @@
-package com.hqqm.mde.repositories;
+package com.hqqm.mde.repositories.impl;
 
 import com.hqqm.mde.jooq.tables.*;
 import com.hqqm.mde.models.CheckboxDTO;
 import com.hqqm.mde.models.RangeDTO;
+import com.hqqm.mde.repositories.EngineDataForFiltrationRepository;
 import lombok.AllArgsConstructor;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;

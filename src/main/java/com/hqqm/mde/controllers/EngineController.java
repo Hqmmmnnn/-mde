@@ -1,7 +1,7 @@
 package com.hqqm.mde.controllers;
 
 import com.hqqm.mde.models.*;
-import com.hqqm.mde.services.engine.EngineFacade;
+import com.hqqm.mde.services.engine.impl.EngineFacade;
 import com.hqqm.mde.services.engine.EngineService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -30,12 +30,17 @@ public class EngineController {
     }
 
     @PutMapping("/engines")
-    public void updateEngine(SaveEngineRequestData saveEngineRequestData) {
-        engineFacade.updateEngine(saveEngineRequestData);
+    public void updateEngine(UpdateEngineDTO updateEngineDTO) {
+        engineService.updateEngine(updateEngineDTO);
     }
 
     @DeleteMapping("/engines/{id}")
     public int deleteEngine(@PathVariable Long id) {
         return engineService.deleteEngine(id);
+    }
+
+    @GetMapping("/editEngine/{id}")
+    public UpdateEngineDTO getEngineDataForUpdate(@PathVariable Long id) {
+        return engineService.getEngineDataForUpdate(id);
     }
 }

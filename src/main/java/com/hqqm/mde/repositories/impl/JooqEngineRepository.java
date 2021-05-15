@@ -1,10 +1,8 @@
-package com.hqqm.mde.repositories;
+package com.hqqm.mde.repositories.impl;
 
-import com.hqqm.mde.models.EngineDTO;
+import com.hqqm.mde.models.*;
 import com.hqqm.mde.jooq.tables.*;
-import com.hqqm.mde.models.Engine;
-import com.hqqm.mde.models.EngineInfoTable;
-import com.hqqm.mde.models.EngineInfoRow;
+import com.hqqm.mde.repositories.EngineRepository;
 import lombok.AllArgsConstructor;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
@@ -305,7 +303,7 @@ public class JooqEngineRepository implements EngineRepository {
         return engineIdRecord.getValue(e.ENGINE_ID);
     }
 
-    public void updateEngine(Engine engine) {
+    public void updateEngine(UpdateEngineDTO engine) {
          context.update(e)
                 .set(e.MANUFACTURER_ID, engine.getManufacturerId())
                 .set(e.SERIES, engine.getSeries())
@@ -346,10 +344,25 @@ public class JooqEngineRepository implements EngineRepository {
                 .set(e.VESSEL_TYPE_ID, engine.getVesselTypeId())
                 .set(e.CLASSIFICATION_SOCIETY_ID, engine.getClassificationSocietyId())
                 .set(e.FLANGE_ID, engine.getFlangeId())
-                .set(e.PATH_TO_IMAGE, engine.getPathToImage())
                 .where(e.ENGINE_ID.eq(engine.getEngineId()))
-                .returning()
-                .fetchOne();
+                .execute();
+    }
+
+    public UpdateEngineDTO getEngineDataForUpdate(Long id) {
+        return context
+                .select(e.MANUFACTURER_ID, e.SERIES, e.MODEL, e.ASSIGNMENT_ID, e.RATING_ID.as("engineRatingId"), e.OPERATING_TIME_YEAR,
+                       e.OPERATING_TIME_FIRST_TS , e.OPERATING_TIME_TO_REPAIR, e.POWER_RATING, e.ROTATION_FREQUENCY_ID,
+                       e.TORQUE_MAX, e.FUEL_RATE, e.FUEL_RATE_NOMINAL_POWER, e.CYLINDER_WORKING_VOLUME,
+                       e.CYLINDER_QUANTITY_ID, e.CYLINDER_DIAMETER, e.PISTON_STROKE, e.COMPRESSION_RATIO,
+                       e.INJECTION_TYPE_ID, e.INJECTION_PRESSURE, e.CYLINDER_MAX_PRESSURE, e.CYLINDER_ARRANGEMENT_ID,
+                       e.CYLINDER_DEGREES, e.WEIGHT_DRY_NO_IMPLEMENTS, e.WEIGHT_WITH_IMPLEMENTS, e.COOLING_SYSTEM_TYPE_ID,
+                       e.LENGTH, e.WIDTH, e.HEIGHT, e.OIL_RATE, e.OIL_SYSTEM_VOLUME, e.COOLING_SYSTEM_VOLUME,
+                       e.IMO_ECO_STANDARD_ID, e.EPA_ECO_STANDARD_ID, e.EU_ECO_STANDARD_ID, e.UIC_ECO_STANDARD_ID,
+                       e.VESSEL_TYPE_ID, e.CLASSIFICATION_SOCIETY_ID, e.FLANGE_ID)
+                .from(e)
+                .where(e.ENGINE_ID.eq(id))
+                .fetchOne()
+                .into(UpdateEngineDTO.class);
     }
 
     public int deleteEngine(Long id) {
@@ -364,6 +377,31 @@ public class JooqEngineRepository implements EngineRepository {
                 .from(e)
                 .where(e.ENGINE_ID.eq(engineId))
                 .fetchOptionalInto(String.class);
+    }
+
+    public String deleteEngineImage(Long engineId) {
+        var path = context
+                .select(e.PATH_TO_IMAGE)
+                .from(e)
+                .where(e.ENGINE_ID.eq(engineId))
+                .fetchOne()
+                .getValue(e.PATH_TO_IMAGE);
+
+        context
+                .update(e)
+                .setNull(e.PATH_TO_IMAGE)
+                .where(e.ENGINE_ID.eq(engineId))
+                .execute();
+
+        return path;
+    }
+
+    public void updateEngineImage(String pathToImg, Long engineId) {
+        context
+                .update(e)
+                .set(e.PATH_TO_IMAGE, pathToImg)
+                .where(e.ENGINE_ID.eq(engineId))
+                .execute();
     }
 }
 

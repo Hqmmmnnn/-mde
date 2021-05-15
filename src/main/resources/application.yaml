@@ -16,8 +16,7 @@ spring:
 
 file:
   upload:
-    location: /home/hqqm/mde/uploads
-    tmpLocation: /home/hqqm/mde/temp
+    filesLocation: /home/hqqm/mde/uploads
     imagesLocation: /home/hqqm/mde/images
 
 jwt:

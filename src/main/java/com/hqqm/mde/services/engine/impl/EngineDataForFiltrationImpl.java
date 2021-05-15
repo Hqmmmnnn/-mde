@@ -1,8 +1,9 @@
-package com.hqqm.mde.services.engine;
+package com.hqqm.mde.services.engine.impl;
 
 import com.hqqm.mde.models.CheckboxDTO;
 import com.hqqm.mde.models.RangeDTO;
 import com.hqqm.mde.repositories.EngineDataForFiltrationRepository;
+import com.hqqm.mde.services.engine.EngineDataForFiltrationService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

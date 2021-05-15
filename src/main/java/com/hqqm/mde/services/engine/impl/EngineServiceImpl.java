@@ -1,7 +1,8 @@
-package com.hqqm.mde.services.engine;
+package com.hqqm.mde.services.engine.impl;
 
 import com.hqqm.mde.models.*;
 import com.hqqm.mde.repositories.EngineRepository;
+import com.hqqm.mde.services.engine.EngineService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,8 +28,13 @@ public class EngineServiceImpl implements EngineService {
         return engineRepository.saveEngine(engine);
     }
 
-    public void updateEngine(Engine engine) {
+    public void updateEngine(UpdateEngineDTO engine) {
         engineRepository.updateEngine(engine);
+    }
+
+    @Override
+    public UpdateEngineDTO getEngineDataForUpdate(Long id) {
+        return engineRepository.getEngineDataForUpdate(id);
     }
 
     @Transactional

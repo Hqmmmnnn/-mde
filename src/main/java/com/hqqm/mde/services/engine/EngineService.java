@@ -8,6 +8,7 @@ public interface EngineService {
     List<EngineDTO> getEngines(RequestParamsForEngineFiltration requestParamsForEngineFiltration);
     List<EngineInfoTable> getEngine(Long id);
     Long saveEngine(Engine engine);
-    void updateEngine(Engine engine);
+    void updateEngine(UpdateEngineDTO engine);
+    UpdateEngineDTO getEngineDataForUpdate(Long id);
     int deleteEngine(Long id);
 }

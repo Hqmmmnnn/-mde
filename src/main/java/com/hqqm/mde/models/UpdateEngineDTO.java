@@ -3,13 +3,11 @@ package com.hqqm.mde.models;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class UpdateEngineRequestData {
+@NoArgsConstructor
+public class UpdateEngineDTO {
     private Long engineId;
     private Integer manufacturerId;
     private String series;
@@ -20,35 +18,34 @@ public class UpdateEngineRequestData {
     private Integer operatingTimeFirstTs;
     private Integer operatingTimeToRepair;
     private Integer powerRating;
-    private Integer rotationSpeed;
+    private Integer rotationFrequencyId;
     private Integer torqueMax;
     private Integer fuelRate;
     private Float fuelRateNominalPower;
     private Float cylinderWorkingVolume;
-    private Integer cylinderQuantity;
+    private Integer cylinderQuantityId;
     private Integer cylinderDiameter;
     private Integer pistonStroke;
     private Float compressionRatio;
-    private String injectionType;
+    private Integer injectionTypeId;
     private Integer injectionPressure;
     private Integer cylinderMaxPressure;
-    private String cylinderArrangement;
+    private Integer cylinderArrangementId;
     private Integer cylinderDegrees;
     private Integer weightDryNoImplements;
     private Integer weightWithImplements;
-    private String coolingSystemType;
+    private Integer coolingSystemTypeId;
     private Integer length;
     private Integer width;
     private Integer height;
     private Float oilRate;
     private Integer oilSystemVolume;
     private Integer coolingSystemVolume;
-    private String imoEcoStandard;
-    private String epaEcoStandard;
-    private String euEcoStandard;
-    private String uicEcoStandard;
-    private String vesselType;
+    private Integer imoEcoStandardId;
+    private Integer epaEcoStandardId;
+    private Integer euEcoStandardId;
+    private Integer uicEcoStandardId;
+    private Integer vesselTypeId;
     private Integer classificationSocietyId;
     private Integer flangeId;
-    private List<MultipartFile> files;
 }
