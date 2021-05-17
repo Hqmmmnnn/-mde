@@ -18,11 +18,6 @@ public class EngineSelectDataController {
         return engineSelectDataService.getManufacturersData();
     }
 
-    @GetMapping("/rotationFrequenciesData")
-    public List<EngineSelectData> getRotationFrequenciesData() {
-        return engineSelectDataService.getRotationFrequenciesData();
-    }
-
     @GetMapping("/cylindersQuantityData")
     public List<EngineSelectData> getCylindersQuantityData() {
         return engineSelectDataService.getCylindersQuantityData();

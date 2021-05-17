@@ -23,7 +23,6 @@ public class JooqEngineRepository implements EngineRepository {
     private final InjectionTypes injectionTypes = InjectionTypes.INJECTION_TYPES;
     private final VesselTypes vesselTypes = VesselTypes.VESSEL_TYPES;
     private final CoolingSystemTypes coolingSystemTypes = CoolingSystemTypes.COOLING_SYSTEM_TYPES;
-    private final RotationFrequency rf = RotationFrequency.ROTATION_FREQUENCY;
     private final ImoEcoStandard imo = ImoEcoStandard.IMO_ECO_STANDARD;
     private final EpaEcoStandard epa = EpaEcoStandard.EPA_ECO_STANDARD;
     private final EuEcoStandard eu = EuEcoStandard.EU_ECO_STANDARD;
@@ -40,7 +39,7 @@ public class JooqEngineRepository implements EngineRepository {
                 e.ENGINE_ID.as("id"),
                 e.MODEL,
                 e.POWER_RATING,
-                rf.FREQUENCY.as("rotationFrequency"),
+                e.ROTATION_FREQUENCY,
                 m.NAME.as("manufacturerName"),
                 e.TORQUE_MAX,
                 a.ASSIGNMENT,
@@ -87,7 +86,6 @@ public class JooqEngineRepository implements EngineRepository {
                 .leftJoin(injectionTypes).using(e.INJECTION_TYPE_ID)
                 .leftJoin(vesselTypes).using(e.VESSEL_TYPE_ID)
                 .leftJoin(coolingSystemTypes).using(e.COOLING_SYSTEM_TYPE_ID)
-                .leftJoin(rf).using(e.ROTATION_FREQUENCY_ID)
                 .leftJoin(imo).using(e.IMO_ECO_STANDARD_ID)
                 .leftJoin(epa).using(e.EPA_ECO_STANDARD_ID)
                 .leftJoin(eu).using(e.EU_ECO_STANDARD_ID)
@@ -113,7 +111,7 @@ public class JooqEngineRepository implements EngineRepository {
                 e.SERIES,
                 e.MODEL,
                 e.POWER_RATING,
-                rf.FREQUENCY,
+                e.ROTATION_FREQUENCY,
                 m.NAME,
                 e.TORQUE_MAX,
                 a.ASSIGNMENT,
@@ -164,7 +162,6 @@ public class JooqEngineRepository implements EngineRepository {
                 .leftJoin(injectionTypes).using(e.INJECTION_TYPE_ID)
                 .leftJoin(vesselTypes).using(e.VESSEL_TYPE_ID)
                 .leftJoin(coolingSystemTypes).using(e.COOLING_SYSTEM_TYPE_ID)
-                .leftJoin(rf).using(e.ROTATION_FREQUENCY_ID)
                 .leftJoin(imo).using(e.IMO_ECO_STANDARD_ID)
                 .leftJoin(epa).using(e.EPA_ECO_STANDARD_ID)
                 .leftJoin(eu).using(e.EU_ECO_STANDARD_ID)
@@ -180,7 +177,7 @@ public class JooqEngineRepository implements EngineRepository {
         var model = new EngineInfoRow("Модель", res.getValue(e.MODEL));
         var series = new EngineInfoRow("Серия", res.getValue(e.SERIES));
         var powerRating = new EngineInfoRow("Мощность кВт", res.getValue(e.POWER_RATING));
-        var rotationFrequency = new EngineInfoRow("Частота вращения об/мин", res.getValue(rf.FREQUENCY));
+        var rotationFrequency = new EngineInfoRow("Частота вращения об/мин", res.getValue(e.ROTATION_FREQUENCY));
         var manufacturerName = new EngineInfoRow("Производитель", res.getValue(m.NAME));
         var torqueMax = new EngineInfoRow("Макс. крутящий момент, нм", res.getValue(e.TORQUE_MAX));
         var assignment = new EngineInfoRow("Назначение", res.getValue(a.ASSIGNMENT));
@@ -277,7 +274,7 @@ public class JooqEngineRepository implements EngineRepository {
                 .insertInto(e,
                         e.MANUFACTURER_ID, e.SERIES, e.MODEL, e.ASSIGNMENT_ID, e.RATING_ID,
                         e.OPERATING_TIME_YEAR, e.OPERATING_TIME_FIRST_TS, e.OPERATING_TIME_TO_REPAIR,
-                        e.POWER_RATING, e.ROTATION_FREQUENCY_ID, e.TORQUE_MAX, e.FUEL_RATE,
+                        e.POWER_RATING, e.ROTATION_FREQUENCY, e.TORQUE_MAX, e.FUEL_RATE,
                         e.FUEL_RATE_NOMINAL_POWER, e.CYLINDER_WORKING_VOLUME, e.CYLINDER_QUANTITY_ID,
                         e.CYLINDER_DIAMETER, e.PISTON_STROKE, e.COMPRESSION_RATIO, e.INJECTION_TYPE_ID,
                         e.INJECTION_PRESSURE, e.CYLINDER_MAX_PRESSURE, e.CYLINDER_ARRANGEMENT_ID,
@@ -288,7 +285,7 @@ public class JooqEngineRepository implements EngineRepository {
                         e.CLASSIFICATION_SOCIETY_ID, e.FLANGE_ID, e.PATH_TO_IMAGE)
                 .values(engine.getManufacturerId(), engine.getSeries(), engine.getModel(), engine.getAssignmentId(), engine.getEngineRatingId(),
                         engine.getOperatingTimeYear(), engine.getOperatingTimeFirstTs(), engine.getOperatingTimeToRepair(),
-                        engine.getPowerRating(), engine.getRotationFrequencyId(), engine.getTorqueMax(), engine.getFuelRate(),
+                        engine.getPowerRating(), engine.getRotationFrequency(), engine.getTorqueMax(), engine.getFuelRate(),
                         engine.getFuelRateNominalPower(), engine.getCylinderWorkingVolume(), engine.getCylinderQuantityId(),
                         engine.getCylinderDiameter(), engine.getPistonStroke(), engine.getCompressionRatio(), engine.getInjectionTypeId(),
                         engine.getInjectionPressure(), engine.getCylinderMaxPressure(), engine.getCylinderArrangementId(),
@@ -314,7 +311,7 @@ public class JooqEngineRepository implements EngineRepository {
                 .set(e.OPERATING_TIME_FIRST_TS, engine.getOperatingTimeFirstTs())
                 .set(e.OPERATING_TIME_TO_REPAIR, engine.getOperatingTimeToRepair())
                 .set(e.POWER_RATING, engine.getPowerRating())
-                .set(e.ROTATION_FREQUENCY_ID, engine.getRotationFrequencyId())
+                .set(e.ROTATION_FREQUENCY, engine.getRotationFrequency())
                 .set(e.TORQUE_MAX, engine.getTorqueMax())
                 .set(e.FUEL_RATE, engine.getFuelRate())
                 .set(e.FUEL_RATE_NOMINAL_POWER, engine.getFuelRateNominalPower())
@@ -351,7 +348,7 @@ public class JooqEngineRepository implements EngineRepository {
     public UpdateEngineDTO getEngineDataForUpdate(Long id) {
         return context
                 .select(e.MANUFACTURER_ID, e.SERIES, e.MODEL, e.ASSIGNMENT_ID, e.RATING_ID.as("engineRatingId"), e.OPERATING_TIME_YEAR,
-                       e.OPERATING_TIME_FIRST_TS , e.OPERATING_TIME_TO_REPAIR, e.POWER_RATING, e.ROTATION_FREQUENCY_ID,
+                       e.OPERATING_TIME_FIRST_TS , e.OPERATING_TIME_TO_REPAIR, e.POWER_RATING, e.ROTATION_FREQUENCY,
                        e.TORQUE_MAX, e.FUEL_RATE, e.FUEL_RATE_NOMINAL_POWER, e.CYLINDER_WORKING_VOLUME,
                        e.CYLINDER_QUANTITY_ID, e.CYLINDER_DIAMETER, e.PISTON_STROKE, e.COMPRESSION_RATIO,
                        e.INJECTION_TYPE_ID, e.INJECTION_PRESSURE, e.CYLINDER_MAX_PRESSURE, e.CYLINDER_ARRANGEMENT_ID,
@@ -365,10 +362,18 @@ public class JooqEngineRepository implements EngineRepository {
                 .into(UpdateEngineDTO.class);
     }
 
-    public int deleteEngine(Long id) {
-        return context.delete(e)
+    public Optional<String> deleteEngine(Long id) {
+        var engine =  context.deleteFrom(e)
                       .where(e.ENGINE_ID.eq(id))
-                      .execute();
+                      .returning()
+                      .fetchOne();
+
+        var imgPath = engine.getPathToImage();
+        if (imgPath == null) {
+            return  Optional.empty();
+        }
+
+        return Optional.of(imgPath);
     }
 
     public Optional<String> findImagePath(Long engineId) {

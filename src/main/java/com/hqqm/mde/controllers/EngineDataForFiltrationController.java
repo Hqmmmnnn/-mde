@@ -29,11 +29,6 @@ public class EngineDataForFiltrationController {
         return engineDataForFiltrationService.getManufacturers();
     }
 
-    @GetMapping("/rotationFrequencies")
-    public List<CheckboxDTO> getRotationFrequency() {
-        return engineDataForFiltrationService.getRotationFrequencies();
-    }
-
     @GetMapping("/imoEcoStandards")
     public List<CheckboxDTO> getImoEcoStandards() {
         return engineDataForFiltrationService.getImoEcoStandards();
@@ -52,6 +47,11 @@ public class EngineDataForFiltrationController {
     @GetMapping("/uicEcoStandards")
     public List<CheckboxDTO> getUicEcoStandards() {
         return engineDataForFiltrationService.getUicEcoStandards();
+    }
+
+    @GetMapping("/rotationFrequencies")
+    public RangeDTO getRotationFrequency() {
+        return engineDataForFiltrationService.getRotationFrequencies();
     }
 
     @GetMapping("/powerRatingMinAndMax")

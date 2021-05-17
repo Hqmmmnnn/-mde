@@ -49,6 +49,13 @@ public class FileStorageServiceImpl implements FileStorageService {
         return fileSystemRepository.saveImage(image);
     }
 
+    public void deleteFiles(Long engineId) {
+        var paths = fileRepository.deleteFiles(engineId);
+        paths.stream()
+                .map(Path::of)
+                .forEach(fileSystemRepository::deleteFile);
+    }
+
     public void deleteFile(Long fileId) {
         var path = fileRepository.deleteFile(fileId);
         fileSystemRepository.deleteFile(Path.of(path));
@@ -68,6 +75,10 @@ public class FileStorageServiceImpl implements FileStorageService {
     public void deleteEngineImage(Long engineId) {
         String path = engineRepository.deleteEngineImage(engineId);
         fileSystemRepository.deleteEngineImage(Path.of(path));
+    }
+
+    public void deleteEngineImageInFS(String path) {
+        fileSystemRepository.deleteFile(Path.of(path));
     }
 
     public void saveImage(MultipartFile image, Long engineId) {

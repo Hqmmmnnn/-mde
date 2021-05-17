@@ -18,7 +18,7 @@ public class UpdateEngineDTO {
     private Integer operatingTimeFirstTs;
     private Integer operatingTimeToRepair;
     private Integer powerRating;
-    private Integer rotationFrequencyId;
+    private Integer rotationFrequency;
     private Integer torqueMax;
     private Integer fuelRate;
     private Float fuelRateNominalPower;

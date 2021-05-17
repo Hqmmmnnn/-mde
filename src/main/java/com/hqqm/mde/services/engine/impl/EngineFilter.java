@@ -55,9 +55,9 @@ class EngineFilter {
             condition = condition.and(Engines.ENGINES_.POWER_RATING.between(range[0]).and(range[1]));
         }
 
-        if (rotationFrequencies != null && rotationFrequencies.size() > 0) {
-            List<Integer> rotations = FromReqListOfStringConverter.toIntegers(rotationFrequencies);
-            condition = condition.and(RotationFrequency.ROTATION_FREQUENCY.FREQUENCY.in(rotations));
+        if (rotationFrequencies != null) {
+            int[] range = StringToRangeConverter.convert(rotationFrequencies);
+            condition = condition.and(Engines.ENGINES_.ROTATION_FREQUENCY.between(range[0]).and(range[1]));
         }
 
         if (cylinderQuantity != null && cylinderQuantity.size() > 0) {

@@ -5,9 +5,9 @@ import com.hqqm.mde.repositories.EngineRepository;
 import com.hqqm.mde.services.engine.EngineService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -37,8 +37,8 @@ public class EngineServiceImpl implements EngineService {
         return engineRepository.getEngineDataForUpdate(id);
     }
 
-    @Transactional
-    public int deleteEngine(Long id) {
-        return engineRepository.deleteEngine(id);
+    public Optional<String> deleteEngine(Long id) {
+        Optional<String> optImgPath = engineRepository.deleteEngine(id);
+        return optImgPath;
     }
 }

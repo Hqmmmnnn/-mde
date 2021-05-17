@@ -15,7 +15,7 @@ public interface EngineRepository {
     Long saveEngine(Engine engine);
     void updateEngine(UpdateEngineDTO engine);
     UpdateEngineDTO getEngineDataForUpdate(Long id);
-    int deleteEngine(Long id);
+    Optional<String> deleteEngine(Long id);
     Optional<String> findImagePath(Long engineId);
     String deleteEngineImage(Long engineId);
     void updateEngineImage(String pathToImg, Long engineId);

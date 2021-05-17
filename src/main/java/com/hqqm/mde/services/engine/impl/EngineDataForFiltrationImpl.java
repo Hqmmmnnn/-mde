@@ -30,7 +30,7 @@ public class EngineDataForFiltrationImpl implements EngineDataForFiltrationServi
     }
 
     @Override
-    public List<CheckboxDTO> getRotationFrequencies() {
+    public RangeDTO getRotationFrequencies() {
         return engineDataForFiltrationRepository.getRotationFrequencies();
     }
 

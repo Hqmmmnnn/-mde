@@ -6,7 +6,6 @@ import java.util.List;
 
 public interface EngineSelectDataService {
     List<EngineSelectData> getManufacturersData();
-    List<EngineSelectData> getRotationFrequenciesData();
     List<EngineSelectData> getCylindersQuantityData();
     List<EngineSelectData> getCylinderArrangementsData();
     List<EngineSelectData> getInjectionTypesData();

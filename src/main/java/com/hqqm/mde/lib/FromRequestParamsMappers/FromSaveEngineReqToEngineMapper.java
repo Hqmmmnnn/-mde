@@ -16,7 +16,7 @@ public class FromSaveEngineReqToEngineMapper {
         e.setOperatingTimeFirstTs(data.getOperatingTimeFirstTs());
         e.setOperatingTimeToRepair(data.getOperatingTimeToRepair());
         e.setPowerRating(data.getPowerRating());
-        e.setRotationFrequencyId(data.getRotationFrequencyId());
+        e.setRotationFrequency(data.getRotationFrequency());
         e.setTorqueMax(data.getTorqueMax());
         e.setFuelRate(data.getFuelRate());
         e.setFuelRateNominalPower(data.getFuelRateNominalPower());

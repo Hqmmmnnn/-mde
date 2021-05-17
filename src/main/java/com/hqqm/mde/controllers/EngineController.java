@@ -35,8 +35,8 @@ public class EngineController {
     }
 
     @DeleteMapping("/engines/{id}")
-    public int deleteEngine(@PathVariable Long id) {
-        return engineService.deleteEngine(id);
+    public void deleteEngine(@PathVariable Long id) {
+        engineFacade.deleteEngine(id);
     }
 
     @GetMapping("/editEngine/{id}")

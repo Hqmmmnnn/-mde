@@ -3,6 +3,7 @@ package com.hqqm.mde.services.engine;
 import com.hqqm.mde.models.*;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface EngineService {
     List<EngineDTO> getEngines(RequestParamsForEngineFiltration requestParamsForEngineFiltration);
@@ -10,5 +11,5 @@ public interface EngineService {
     Long saveEngine(Engine engine);
     void updateEngine(UpdateEngineDTO engine);
     UpdateEngineDTO getEngineDataForUpdate(Long id);
-    int deleteEngine(Long id);
+    Optional<String> deleteEngine(Long id);
 }

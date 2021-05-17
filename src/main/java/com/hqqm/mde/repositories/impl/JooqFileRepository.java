@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 @AllArgsConstructor
@@ -52,6 +53,18 @@ public class JooqFileRepository implements FileRepository {
                         fileEntity.getContentType()));
 
         batch.execute();
+    }
+
+    public List<String> deleteFiles(Long engineId) {
+        return context
+                .deleteFrom(f)
+                .where(f.ENGINE_ID.eq(engineId))
+                .returning()
+                .fetch()
+                .into(FilesRecord.class)
+                .stream()
+                .map(file -> file.getValue(f.LOCATION))
+                .collect(Collectors.toList());
     }
 
     public String deleteFile(Long fileId) {

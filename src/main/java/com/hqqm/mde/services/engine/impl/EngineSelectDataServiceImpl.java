@@ -17,12 +17,7 @@ public class EngineSelectDataServiceImpl implements EngineSelectDataService {
     public List<EngineSelectData> getManufacturersData() {
         return engineSelectDataRepository.getManufacturersData();
     }
-
-    @Override
-    public List<EngineSelectData> getRotationFrequenciesData() {
-        return engineSelectDataRepository.getRotationFrequenciesData();
-    }
-
+    
     @Override
     public List<EngineSelectData> getCylindersQuantityData() {
         return engineSelectDataRepository.getCylindersQuantityData();

@@ -9,5 +9,6 @@ public interface FileRepository {
     List<EngineFileNames> getFileNames(Long engineId, List<String> names);
     List<EngineFileNames> getFileNames(Long engineId);
     void saveFiles(List<FileEntity> files);
+    List<String> deleteFiles(Long engineId);
     String deleteFile(Long fileId);
 }

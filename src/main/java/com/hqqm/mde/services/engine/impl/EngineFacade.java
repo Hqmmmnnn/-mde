@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,5 +51,12 @@ public class EngineFacade {
         }
 
         return engineId;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteEngine(Long id) {
+        fileStorageService.deleteFiles(id);
+        Optional<String> imgLocation = engineService.deleteEngine(id);
+        imgLocation.ifPresent(fileStorageService::deleteEngineImageInFS);
     }
 }
