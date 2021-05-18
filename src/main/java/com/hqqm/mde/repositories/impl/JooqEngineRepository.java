@@ -4,6 +4,7 @@ import com.hqqm.mde.models.*;
 import com.hqqm.mde.jooq.tables.*;
 import com.hqqm.mde.repositories.EngineRepository;
 import lombok.AllArgsConstructor;
+import static org.jooq.impl.DSL.*;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
@@ -154,8 +155,12 @@ public class JooqEngineRepository implements EngineRepository {
                 epa.QUOTE_NAME,
                 eu.QUOTE_NAME,
                 uic.QUOTE_NAME,
+                // other
                 vesselTypes.TYPE,
-                cs.NAME)
+                cs.NAME,
+                e.NOTE,
+                e.CREATED_AT,
+                e.LAST_UPDATE)
                 .from(e)
                 .leftJoin(cq).using(e.CYLINDER_QUANTITY_ID)
                 .leftJoin(cylinderArrangements).using(e.CYLINDER_ARRANGEMENT_ID)
@@ -260,8 +265,13 @@ public class JooqEngineRepository implements EngineRepository {
 
         var vesselType = new EngineInfoRow("Тип судна", res.getValue(vesselTypes.TYPE));
         var classificationSociety = new EngineInfoRow("Классифиционное общество", res.getValue(cs.NAME));
+        var note = new EngineInfoRow("Примечание", res.getValue(e.NOTE));
+        var createdAt = new EngineInfoRow("Дата добавления двигателя", res.getValue(e.CREATED_AT));
+        var lastUpdate = new EngineInfoRow("Дата последнего обновления", res.getValue(e.LAST_UPDATE));
         String otherBlockName = "Другое";
-        var otherBlock = new EngineInfoTable(otherBlockName, Arrays.asList(vesselType, classificationSociety));
+        var otherBlock = new EngineInfoTable(
+                otherBlockName,
+                Arrays.asList(vesselType, classificationSociety, note, createdAt, lastUpdate));
 
         return Arrays.asList(
                 generalBlock, recommendedOperatingTimeBlock, fuelRateBlock, cylinderBlock, injectionBlock,
@@ -282,7 +292,8 @@ public class JooqEngineRepository implements EngineRepository {
                         e.COOLING_SYSTEM_TYPE_ID, e.LENGTH, e.WIDTH, e.HEIGHT,
                         e.OIL_RATE, e.OIL_SYSTEM_VOLUME, e.COOLING_SYSTEM_VOLUME, e.IMO_ECO_STANDARD_ID,
                         e.EPA_ECO_STANDARD_ID, e.EU_ECO_STANDARD_ID, e.UIC_ECO_STANDARD_ID, e.VESSEL_TYPE_ID,
-                        e.CLASSIFICATION_SOCIETY_ID, e.FLANGE_ID, e.PATH_TO_IMAGE)
+                        e.CLASSIFICATION_SOCIETY_ID, e.FLANGE_ID, e.PATH_TO_IMAGE, e.NOTE,
+                        e.CREATED_AT, e.LAST_UPDATE)
                 .values(engine.getManufacturerId(), engine.getSeries(), engine.getModel(), engine.getAssignmentId(), engine.getEngineRatingId(),
                         engine.getOperatingTimeYear(), engine.getOperatingTimeFirstTs(), engine.getOperatingTimeToRepair(),
                         engine.getPowerRating(), engine.getRotationFrequency(), engine.getTorqueMax(), engine.getFuelRate(),
@@ -293,7 +304,8 @@ public class JooqEngineRepository implements EngineRepository {
                         engine.getCoolingSystemTypeId(), engine.getLength(), engine.getWidth(), engine.getHeight(),
                         engine.getOilRate(), engine.getOilSystemVolume(), engine.getCoolingSystemVolume(), engine.getImoEcoStandardId(),
                         engine.getEpaEcoStandardId(), engine.getEuEcoStandardId(), engine.getUicEcoStandardId(), engine.getVesselTypeId(),
-                        engine.getClassificationSocietyId(), engine.getFlangeId(), engine.getPathToImage())
+                        engine.getClassificationSocietyId(), engine.getFlangeId(), engine.getPathToImage(), engine.getNote(),
+                        currentTimestamp(), currentTimestamp())
                 .returningResult(e.ENGINE_ID)
                 .fetchOne();
 

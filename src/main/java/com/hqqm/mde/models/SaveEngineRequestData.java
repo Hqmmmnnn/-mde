@@ -51,6 +51,7 @@ public class SaveEngineRequestData {
     private Integer vesselTypeId;
     private Integer classificationSocietyId;
     private Integer flangeId;
+    private String note;
     private List<MultipartFile> files;
     private MultipartFile image;
 }

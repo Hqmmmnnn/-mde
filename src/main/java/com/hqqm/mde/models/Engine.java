@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -52,4 +53,7 @@ public class Engine {
     private Integer flangeId;
     private List<FileEntity> files;
     private String pathToImage;
+    private String note;
+    private Date createdAt;
+    private Date lastUpdate;
 }
