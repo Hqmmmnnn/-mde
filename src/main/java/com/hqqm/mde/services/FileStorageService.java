@@ -1,6 +1,7 @@
 package com.hqqm.mde.services;
 
 import com.hqqm.mde.models.EngineFileNames;
+import com.hqqm.mde.models.ExportEngineData;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,4 +20,6 @@ public interface FileStorageService {
     void saveImage(MultipartFile file, Long engineId);
     void deleteEngineImage(Long engineId);
     void deleteEngineImageInFS(String path);
+
+    ExportEngineData exportEngineInCSV(Long id);
 }

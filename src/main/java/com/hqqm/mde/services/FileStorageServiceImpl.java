@@ -3,6 +3,7 @@ package com.hqqm.mde.services;
 import com.hqqm.mde.exceptions.FileStorageException;
 import com.hqqm.mde.lib.FromRequestParamsMappers.MultipartFileToFileMapper;
 import com.hqqm.mde.models.EngineFileNames;
+import com.hqqm.mde.models.ExportEngineData;
 import com.hqqm.mde.models.FileEntity;
 import com.hqqm.mde.repositories.EngineRepository;
 import com.hqqm.mde.repositories.FileRepository;
@@ -79,6 +80,11 @@ public class FileStorageServiceImpl implements FileStorageService {
 
     public void deleteEngineImageInFS(String path) {
         fileSystemRepository.deleteFile(Path.of(path));
+    }
+
+    @Override
+    public ExportEngineData exportEngineInCSV(Long id) {
+        return engineRepository.exportEngineInCSV(id);
     }
 
     public void saveImage(MultipartFile image, Long engineId) {

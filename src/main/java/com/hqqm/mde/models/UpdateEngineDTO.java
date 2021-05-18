@@ -48,4 +48,5 @@ public class UpdateEngineDTO {
     private Integer vesselTypeId;
     private Integer classificationSocietyId;
     private Integer flangeId;
+    private String note;
 }

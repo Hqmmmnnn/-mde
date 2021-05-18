@@ -1,9 +1,6 @@
 package com.hqqm.mde.repositories;
 
-import com.hqqm.mde.models.Engine;
-import com.hqqm.mde.models.EngineDTO;
-import com.hqqm.mde.models.EngineInfoTable;
-import com.hqqm.mde.models.UpdateEngineDTO;
+import com.hqqm.mde.models.*;
 import org.jooq.Condition;
 
 import java.util.List;
@@ -19,4 +16,6 @@ public interface EngineRepository {
     Optional<String> findImagePath(Long engineId);
     String deleteEngineImage(Long engineId);
     void updateEngineImage(String pathToImg, Long engineId);
+
+    ExportEngineData exportEngineInCSV(Long id);
 }

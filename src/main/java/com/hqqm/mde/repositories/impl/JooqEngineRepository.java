@@ -7,11 +7,11 @@ import lombok.AllArgsConstructor;
 import static org.jooq.impl.DSL.*;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
+import org.jooq.Record;
 import org.springframework.stereotype.Repository;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Repository
 @AllArgsConstructor
@@ -266,8 +266,13 @@ public class JooqEngineRepository implements EngineRepository {
         var vesselType = new EngineInfoRow("Тип судна", res.getValue(vesselTypes.TYPE));
         var classificationSociety = new EngineInfoRow("Классифиционное общество", res.getValue(cs.NAME));
         var note = new EngineInfoRow("Примечание", res.getValue(e.NOTE));
-        var createdAt = new EngineInfoRow("Дата добавления двигателя", res.getValue(e.CREATED_AT));
-        var lastUpdate = new EngineInfoRow("Дата последнего обновления", res.getValue(e.LAST_UPDATE));
+        var createdAt = new EngineInfoRow(
+                "Дата добавления двигателя",
+                res.getValue(e.CREATED_AT).format(DateTimeFormatter.ofPattern("dd MMM yyyy hh:mm:ss", new Locale("ru"))));
+        var lastUpdate = new EngineInfoRow(
+                "Дата последнего обновления",
+                res.getValue(e.LAST_UPDATE).format(DateTimeFormatter.ofPattern("dd MMM yyyy hh:mm:ss",new Locale("ru"))));
+
         String otherBlockName = "Другое";
         var otherBlock = new EngineInfoTable(
                 otherBlockName,
@@ -313,48 +318,51 @@ public class JooqEngineRepository implements EngineRepository {
     }
 
     public void updateEngine(UpdateEngineDTO engine) {
-         context.update(e)
-                .set(e.MANUFACTURER_ID, engine.getManufacturerId())
-                .set(e.SERIES, engine.getSeries())
-                .set(e.MODEL, engine.getModel())
-                .set(e.ASSIGNMENT_ID, engine.getAssignmentId())
-                .set(e.RATING_ID, engine.getEngineRatingId())
-                .set(e.OPERATING_TIME_YEAR, engine.getOperatingTimeYear())
-                .set(e.OPERATING_TIME_FIRST_TS, engine.getOperatingTimeFirstTs())
-                .set(e.OPERATING_TIME_TO_REPAIR, engine.getOperatingTimeToRepair())
-                .set(e.POWER_RATING, engine.getPowerRating())
-                .set(e.ROTATION_FREQUENCY, engine.getRotationFrequency())
-                .set(e.TORQUE_MAX, engine.getTorqueMax())
-                .set(e.FUEL_RATE, engine.getFuelRate())
-                .set(e.FUEL_RATE_NOMINAL_POWER, engine.getFuelRateNominalPower())
-                .set(e.CYLINDER_WORKING_VOLUME, engine.getCylinderWorkingVolume())
-                .set(e.CYLINDER_QUANTITY_ID, engine.getCylinderQuantityId())
-                .set(e.CYLINDER_DIAMETER, engine.getCylinderDiameter())
-                .set(e.PISTON_STROKE, engine.getPistonStroke())
-                .set(e.COMPRESSION_RATIO, engine.getCompressionRatio())
-                .set(e.INJECTION_TYPE_ID, engine.getInjectionTypeId())
-                .set(e.INJECTION_PRESSURE, engine.getInjectionPressure())
-                .set(e.CYLINDER_MAX_PRESSURE, engine.getCylinderMaxPressure())
-                .set(e.CYLINDER_ARRANGEMENT_ID, engine.getCylinderArrangementId())
-                .set(e.CYLINDER_DEGREES, engine.getCylinderDegrees())
-                .set(e.WEIGHT_DRY_NO_IMPLEMENTS, engine.getWeightDryNoImplements())
-                .set(e.WEIGHT_WITH_IMPLEMENTS, engine.getWeightWithImplements())
-                .set(e.COOLING_SYSTEM_TYPE_ID, engine.getCoolingSystemTypeId())
-                .set(e.LENGTH, engine.getLength())
-                .set(e.WIDTH, engine.getWidth())
-                .set(e.HEIGHT, engine.getHeight())
-                .set(e.OIL_RATE, engine.getOilRate())
-                .set(e.OIL_SYSTEM_VOLUME, engine.getOilSystemVolume())
-                .set(e.COOLING_SYSTEM_VOLUME, engine.getCoolingSystemVolume())
-                .set(e.IMO_ECO_STANDARD_ID, engine.getImoEcoStandardId())
-                .set(e.EPA_ECO_STANDARD_ID, engine.getEpaEcoStandardId())
-                .set(e.EU_ECO_STANDARD_ID, engine.getEuEcoStandardId())
-                .set(e.UIC_ECO_STANDARD_ID, engine.getUicEcoStandardId())
-                .set(e.VESSEL_TYPE_ID, engine.getVesselTypeId())
-                .set(e.CLASSIFICATION_SOCIETY_ID, engine.getClassificationSocietyId())
-                .set(e.FLANGE_ID, engine.getFlangeId())
-                .where(e.ENGINE_ID.eq(engine.getEngineId()))
-                .execute();
+         context
+                 .update(e)
+                 .set(e.MANUFACTURER_ID, engine.getManufacturerId())
+                 .set(e.SERIES, engine.getSeries())
+                 .set(e.MODEL, engine.getModel())
+                 .set(e.ASSIGNMENT_ID, engine.getAssignmentId())
+                 .set(e.RATING_ID, engine.getEngineRatingId())
+                 .set(e.OPERATING_TIME_YEAR, engine.getOperatingTimeYear())
+                 .set(e.OPERATING_TIME_FIRST_TS, engine.getOperatingTimeFirstTs())
+                 .set(e.OPERATING_TIME_TO_REPAIR, engine.getOperatingTimeToRepair())
+                 .set(e.POWER_RATING, engine.getPowerRating())
+                 .set(e.ROTATION_FREQUENCY, engine.getRotationFrequency())
+                 .set(e.TORQUE_MAX, engine.getTorqueMax())
+                 .set(e.FUEL_RATE, engine.getFuelRate())
+                 .set(e.FUEL_RATE_NOMINAL_POWER, engine.getFuelRateNominalPower())
+                 .set(e.CYLINDER_WORKING_VOLUME, engine.getCylinderWorkingVolume())
+                 .set(e.CYLINDER_QUANTITY_ID, engine.getCylinderQuantityId())
+                 .set(e.CYLINDER_DIAMETER, engine.getCylinderDiameter())
+                 .set(e.PISTON_STROKE, engine.getPistonStroke())
+                 .set(e.COMPRESSION_RATIO, engine.getCompressionRatio())
+                 .set(e.INJECTION_TYPE_ID, engine.getInjectionTypeId())
+                 .set(e.INJECTION_PRESSURE, engine.getInjectionPressure())
+                 .set(e.CYLINDER_MAX_PRESSURE, engine.getCylinderMaxPressure())
+                 .set(e.CYLINDER_ARRANGEMENT_ID, engine.getCylinderArrangementId())
+                 .set(e.CYLINDER_DEGREES, engine.getCylinderDegrees())
+                 .set(e.WEIGHT_DRY_NO_IMPLEMENTS, engine.getWeightDryNoImplements())
+                 .set(e.WEIGHT_WITH_IMPLEMENTS, engine.getWeightWithImplements())
+                 .set(e.COOLING_SYSTEM_TYPE_ID, engine.getCoolingSystemTypeId())
+                 .set(e.LENGTH, engine.getLength())
+                 .set(e.WIDTH, engine.getWidth())
+                 .set(e.HEIGHT, engine.getHeight())
+                 .set(e.OIL_RATE, engine.getOilRate())
+                 .set(e.OIL_SYSTEM_VOLUME, engine.getOilSystemVolume())
+                 .set(e.COOLING_SYSTEM_VOLUME, engine.getCoolingSystemVolume())
+                 .set(e.IMO_ECO_STANDARD_ID, engine.getImoEcoStandardId())
+                 .set(e.EPA_ECO_STANDARD_ID, engine.getEpaEcoStandardId())
+                 .set(e.EU_ECO_STANDARD_ID, engine.getEuEcoStandardId())
+                 .set(e.UIC_ECO_STANDARD_ID, engine.getUicEcoStandardId())
+                 .set(e.VESSEL_TYPE_ID, engine.getVesselTypeId())
+                 .set(e.CLASSIFICATION_SOCIETY_ID, engine.getClassificationSocietyId())
+                 .set(e.FLANGE_ID, engine.getFlangeId())
+                 .set(e.NOTE, engine.getNote())
+                 .set(e.LAST_UPDATE, currentLocalDateTime())
+                 .where(e.ENGINE_ID.eq(engine.getEngineId()))
+                 .execute();
     }
 
     public UpdateEngineDTO getEngineDataForUpdate(Long id) {
@@ -367,7 +375,7 @@ public class JooqEngineRepository implements EngineRepository {
                        e.CYLINDER_DEGREES, e.WEIGHT_DRY_NO_IMPLEMENTS, e.WEIGHT_WITH_IMPLEMENTS, e.COOLING_SYSTEM_TYPE_ID,
                        e.LENGTH, e.WIDTH, e.HEIGHT, e.OIL_RATE, e.OIL_SYSTEM_VOLUME, e.COOLING_SYSTEM_VOLUME,
                        e.IMO_ECO_STANDARD_ID, e.EPA_ECO_STANDARD_ID, e.EU_ECO_STANDARD_ID, e.UIC_ECO_STANDARD_ID,
-                       e.VESSEL_TYPE_ID, e.CLASSIFICATION_SOCIETY_ID, e.FLANGE_ID)
+                       e.VESSEL_TYPE_ID, e.CLASSIFICATION_SOCIETY_ID, e.FLANGE_ID, e.NOTE)
                 .from(e)
                 .where(e.ENGINE_ID.eq(id))
                 .fetchOne()
@@ -419,6 +427,81 @@ public class JooqEngineRepository implements EngineRepository {
                 .set(e.PATH_TO_IMAGE, pathToImg)
                 .where(e.ENGINE_ID.eq(engineId))
                 .execute();
+    }
+
+    @Override
+    public ExportEngineData exportEngineInCSV(Long id) {
+        Record engine = context.select(
+                e.MODEL.as("Модель"),
+                e.SERIES.as("Серия"),
+                e.ROTATION_FREQUENCY.as("Частота вращения"),
+                e.POWER_RATING.as("Мощность"),
+
+                m.NAME.as("Производитель"),
+                e.TORQUE_MAX.as("Макс крутящий момент (нм)"),
+                a.ASSIGNMENT.as("Назначение"),
+                r.LOAD_MODE.as("Рейтинг"),
+                f.TYPE.as("Фланец"),
+                // recommended operating time
+                e.OPERATING_TIME_YEAR.as("Рекомендуемая наработка в год (ч)"),
+                e.OPERATING_TIME_FIRST_TS.as("Рекомендуемая наработка до первого ТО (ч)"),
+                e.OPERATING_TIME_TO_REPAIR.as("Рекомендуемая наработка до кап. ремонта (ч)"),
+                // fuel consumption
+                e.FUEL_RATE.as("Расход топлива удельный (г/кВт ч)"),
+                e.FUEL_RATE_NOMINAL_POWER.as("Расход топлива номинальной мощности (л/ч)"),
+                // cylinder
+                e.CYLINDER_WORKING_VOLUME.as("Рабочий объем цилиндра, (л)"),
+                cq.QUANTITY.as("Количество цилиндров"),
+                e.CYLINDER_DIAMETER.as("Диаметр цилиндра (мм)"),
+                e.PISTON_STROKE.as("Ход поршня (мм)"),
+                e.COMPRESSION_RATIO.as("Степень сжатия"),
+                e.CYLINDER_MAX_PRESSURE.as("Макс. давление в цилиндре (Pz бар)"),
+                cylinderArrangements.ARRANGEMENT.as("Расположение цилиндров"),
+                e.CYLINDER_DEGREES.as("Развал цилиндра градусы"),
+                // injection
+                injectionTypes.TYPE.as("Тип впрыска"),
+                e.INJECTION_PRESSURE.as("Давление впрыска (Pz бар)"),
+                // dimensions
+                e.LENGTH.as("Длина мм"),
+                e.WIDTH.as("Ширина мм"),
+                e.HEIGHT.as("Высота мм"),
+                // weight
+                e.WEIGHT_DRY_NO_IMPLEMENTS.as("Вес без оборудования (кг)"),
+                e.WEIGHT_WITH_IMPLEMENTS.as("Вес с оборудованием (кг)"),
+                // cooling
+                coolingSystemTypes.TYPE.as("Тип охлаждения"),
+                e.COOLING_SYSTEM_VOLUME.as("Объем системы охлаждения (л)"),
+                // oil
+                e.OIL_RATE.as("Расход на угар системы смазки (г/кВт ч)"),
+                e.OIL_SYSTEM_VOLUME.as("Объем системы смазки (л)"),
+                // eco standards
+                imo.QUOTE_NAME.as("IMO"),
+                epa.QUOTE_NAME.as("EPA"),
+                eu.QUOTE_NAME.as("EU"),
+                uic.QUOTE_NAME.as("UIC"),
+                // other
+                vesselTypes.TYPE.as("Тип судна"),
+                cs.NAME.as("Класс. общество"),
+                e.NOTE.as("Примечание"))
+                .from(e)
+                .leftJoin(cq).using(e.CYLINDER_QUANTITY_ID)
+                .leftJoin(cylinderArrangements).using(e.CYLINDER_ARRANGEMENT_ID)
+                .leftJoin(injectionTypes).using(e.INJECTION_TYPE_ID)
+                .leftJoin(vesselTypes).using(e.VESSEL_TYPE_ID)
+                .leftJoin(coolingSystemTypes).using(e.COOLING_SYSTEM_TYPE_ID)
+                .leftJoin(imo).using(e.IMO_ECO_STANDARD_ID)
+                .leftJoin(epa).using(e.EPA_ECO_STANDARD_ID)
+                .leftJoin(eu).using(e.EU_ECO_STANDARD_ID)
+                .leftJoin(uic).using(e.UIC_ECO_STANDARD_ID)
+                .leftJoin(m).using(e.MANUFACTURER_ID)
+                .leftJoin(a).using(e.ASSIGNMENT_ID)
+                .leftJoin(r).using(e.RATING_ID)
+                .leftJoin(cs).using(e.CLASSIFICATION_SOCIETY_ID)
+                .leftJoin(f).using(e.FLANGE_ID)
+                .where(e.ENGINE_ID.eq(id))
+                .fetchOne();
+
+        return new ExportEngineData((String) engine.getValue("Модель"), engine.formatCSV());
     }
 }
 
