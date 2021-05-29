@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(signupRequestDTO.getPassword()));
         user.setFirstName(signupRequestDTO.getFirstName());
         user.setLastName(signupRequestDTO.getLastName());
-        user.setRole(Role.USER);
+        user.setRole(Role.READER);
         userRepository.save(user);
     }
 

@@ -5,11 +5,12 @@ import com.hqqm.mde.models.RangeDTO;
 import com.hqqm.mde.services.engine.EngineDataForFiltrationService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RestController
+@RestController @RequestMapping("/api/filtrationData")
 @AllArgsConstructor
 public class EngineDataForFiltrationController {
     private final EngineDataForFiltrationService engineDataForFiltrationService;

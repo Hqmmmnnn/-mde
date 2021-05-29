@@ -1,6 +1,7 @@
 package com.hqqm.mde.security;
 
 import com.hqqm.mde.config.JwtTokenProperties;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,13 +22,11 @@ public class JwtTokenProvider {
 
     private final UserDetailsService userDetailsService;
     private String secretKey;
-    private final String authorizationHeader;
     private final long validityInMilliseconds;
 
     public JwtTokenProvider(UserDetailsService userDetailsService, JwtTokenProperties jwtTokenProperties) {
         this.userDetailsService = userDetailsService;
         secretKey = jwtTokenProperties.getSecret();
-        authorizationHeader = jwtTokenProperties.getHeader();
         validityInMilliseconds = jwtTokenProperties.getExpiration();
     }
 
@@ -70,9 +69,5 @@ public class JwtTokenProvider {
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
-    }
-
-    public String resolveToken(HttpServletRequest request) {
-        return request.getHeader(authorizationHeader);
     }
 }

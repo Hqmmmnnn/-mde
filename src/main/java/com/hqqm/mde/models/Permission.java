@@ -5,10 +5,10 @@ import lombok.Getter;
 
 @AllArgsConstructor
 public enum Permission {
-    ENGINES_READ("engines_read"),
-    ENGINES_WRITE("engines_write"),
-    ENGINES_UPDATE("engines_update"),
-    ENGINES_DELETE("engines_delete");
+    ENGINES_READ("engines:read"),
+    ENGINES_WRITE("engines:write"),
+    ENGINES_UPDATE("engines:update"),
+    ENGINES_DELETE("engines:delete");
 
     @Getter
     private final String permission;

@@ -20,7 +20,6 @@ file:
     imagesLocation: /home/hqqm/mde/images
 
 jwt:
-  header: Authorization
   secret: mde
   expiration: 604800
 

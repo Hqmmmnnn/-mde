@@ -6,6 +6,7 @@ import com.hqqm.mde.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -16,8 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@RestController
-@RequestMapping("/auth")
+@RestController @RequestMapping("/api/auth")
 @AllArgsConstructor
 public class AuthController {
 
@@ -47,11 +47,5 @@ public class AuthController {
 
         userService.create(signupRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
-    }
-
-    @PostMapping("/logout")
-    public void logout(HttpServletRequest request, HttpServletResponse response) {
-        var logoutHandler = new SecurityContextLogoutHandler();
-        logoutHandler.logout(request, response, null);
     }
 }

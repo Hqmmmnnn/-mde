@@ -1,10 +1,12 @@
 package com.hqqm.mde.config;
 
+import com.hqqm.mde.models.Permission;
 import com.hqqm.mde.models.Role;
 import com.hqqm.mde.security.JwtTokenFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -27,14 +29,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/").permitAll()
-                .antMatchers("/auth/register").permitAll()
-                .antMatchers("/auth/login").permitAll()
+                .mvcMatchers(HttpMethod.GET,"/api/filtrationData/**").permitAll()
+                .mvcMatchers(HttpMethod.GET, "/api/engines/**").permitAll()
+                .mvcMatchers(HttpMethod.GET, "/api/images/**").permitAll()
+                .mvcMatchers(HttpMethod.GET, "/api/download/**").permitAll()
+                .mvcMatchers(HttpMethod.GET, "/api/filenames/**").permitAll()
+                .mvcMatchers("/api/auth/register").permitAll()
+                .mvcMatchers("/api/auth/login").permitAll()
+                .mvcMatchers("/api/selectData/**").hasAnyAuthority(Permission.ENGINES_WRITE.getPermission(), Permission.ENGINES_UPDATE.getPermission())
                 .anyRequest()
-                .permitAll()
+                .authenticated()
                 .and()
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
     }
