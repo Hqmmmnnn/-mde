@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ExportEngineData {
-    private String model;
+    private String name;
     private String data;
 }

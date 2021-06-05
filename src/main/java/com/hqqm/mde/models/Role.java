@@ -3,8 +3,7 @@ package com.hqqm.mde.models;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.parameters.P;
-
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -22,5 +21,11 @@ public enum Role {
         return permissions.stream()
                 .map(permission -> new SimpleGrantedAuthority(permission.getPermission()))
                 .collect(Collectors.toUnmodifiableSet());
+    }
+
+    public List<String> getInformation() {
+        return permissions.stream()
+                .map(Permission::getInfo)
+                .collect(Collectors.toList());
     }
 }

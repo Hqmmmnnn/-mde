@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface EngineService {
-    List<EngineDTO> getEngines(RequestParamsForEngineFiltration requestParamsForEngineFiltration);
+    EnginesDemo getEngines(RequestParamsForEngineFiltration requestParamsForEngineFiltration);
     List<EngineInfoTable> getEngine(Long id);
     Long saveEngine(Engine engine);
     void updateEngine(UpdateEngineDTO engine);

@@ -16,15 +16,17 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/currentUser")
+    @PreAuthorize("isFullyAuthenticated()")
     public UserDTO getUser(Authentication auth) {
-        var optUser = userService.findByEmail(auth.getName());
-        var user = optUser.orElseThrow(() -> new UsernameNotFoundException("user not found"));
+        var user = userService.findByEmail(auth.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("user not found"));
 
         return new UserDTO(
                 user.getEmail(),
                 user.getFirstName(),
                 user.getLastName(),
-                user.getRole()
+                user.getRole(),
+                user.getRole().getInformation()
         );
     }
 }

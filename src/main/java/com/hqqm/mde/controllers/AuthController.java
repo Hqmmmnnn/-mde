@@ -31,21 +31,21 @@ public class AuthController {
             String email = request.getEmail();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, request.getPassword()));
             User user = userService.findByEmail(email)
-                    .orElseThrow(() -> new UsernameNotFoundException("User does not exist"));
+                    .orElseThrow(() -> new UsernameNotFoundException("Такого пользователя не существует"));
             String token = jwtTokenProvider.createToken(email, user.getRole().name());
             var response = new AuthenticationResponseDTO(token);
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
-            return new ResponseEntity<>("Invalid email or password", HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("Неверный емейл или пароль", HttpStatus.FORBIDDEN);
         }
     }
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody SignupRequestDTO signupRequestDTO) {
         if(userService.findByEmail(signupRequestDTO.getEmail()).isPresent())
-            return ResponseEntity.badRequest().body("Username is already taken");
+            return ResponseEntity.badRequest().body("Данное имя пользователя уже занято");
 
         userService.create(signupRequestDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
+        return ResponseEntity.status(HttpStatus.CREATED).body("Регистрация прошла успешно");
     }
 }

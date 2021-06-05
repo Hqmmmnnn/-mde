@@ -11,19 +11,20 @@ import java.util.List;
 
 import static org.jooq.impl.DSL.trueCondition;
 
-class EngineFilter {
+public class EngineFilter {
     private final RequestParamsForEngineFiltration e;
     private Condition condition;
-    private final Long lastFetchedEngineId;
+    private final Integer currentPage;
 
     public EngineFilter(RequestParamsForEngineFiltration e) {
         this.e = e;
         condition = trueCondition();
-        lastFetchedEngineId = e.getLastFetchedEngineId() == null ? 0 : e.getLastFetchedEngineId();
+        Integer currPage = e.getCurrentPage();
+        currentPage = currPage == null ? 1 : currPage;
     }
 
-    public Long getLastFetchedEngineId() {
-        return lastFetchedEngineId;
+    public Integer getCurrentPage() {
+        return currentPage;
     }
 
     public Condition getCondition() {

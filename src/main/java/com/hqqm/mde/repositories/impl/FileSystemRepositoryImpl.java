@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class FileSystemRepositoryImpl implements FileSystemRepository {
@@ -105,11 +106,26 @@ public class FileSystemRepositoryImpl implements FileSystemRepository {
     }
 
     @Override
-    public byte[] getImage(Path pathToImage) {
+    public byte[] getImageForUpdate(Optional<Path> pathToImage) {
         try {
-            return Files.readAllBytes(pathToImage);
+            if (pathToImage.isPresent() && Files.exists(pathToImage.get()))
+                return Files.readAllBytes(pathToImage.get());
+            else
+                throw new FileNotFoundException("File not found");
         } catch (IOException e) {
-            throw new FileStorageException("Image not found");
+            throw new FileStorageException(e);
+        }
+    }
+
+    @Override
+    public byte[] getImage(Optional<Path> pathToImage) {
+        try {
+            if (pathToImage.isPresent() && Files.exists(pathToImage.get()))
+                return Files.readAllBytes(pathToImage.get());
+             else
+                return Files.readAllBytes(imagesLocation.resolve("default-engine.png"));
+        } catch (IOException e) {
+            throw new FileStorageException(e);
         }
     }
 

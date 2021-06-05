@@ -1,7 +1,5 @@
 package com.hqqm.mde.config;
 
-import com.hqqm.mde.models.Permission;
-import com.hqqm.mde.models.Role;
 import com.hqqm.mde.security.JwtTokenFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +11,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -40,7 +37,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(HttpMethod.GET, "/api/filenames/**").permitAll()
                 .mvcMatchers("/api/auth/register").permitAll()
                 .mvcMatchers("/api/auth/login").permitAll()
-                .mvcMatchers("/api/selectData/**").hasAnyAuthority(Permission.ENGINES_WRITE.getPermission(), Permission.ENGINES_UPDATE.getPermission())
                 .anyRequest()
                 .authenticated()
                 .and()

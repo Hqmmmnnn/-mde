@@ -2,9 +2,9 @@ package com.hqqm.mde.controllers;
 
 import com.hqqm.mde.models.EngineFileNames;
 import com.hqqm.mde.models.ExportEngineData;
+import com.hqqm.mde.models.RequestParamsForEngineFiltration;
 import com.hqqm.mde.services.FileStorageService;
 import lombok.AllArgsConstructor;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -13,9 +13,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.List;
 
 @RestController @RequestMapping("/api")
@@ -54,7 +51,17 @@ public class FileController {
         ExportEngineData data = fileStorageService.exportEngineInCSV(engineId);
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + data.getModel() + ".csv\"" )
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + data.getName() + ".csv\"" )
+                .contentType(MediaType.parseMediaType("text/csv"))
+                .body(data.getData());
+    }
+
+    @GetMapping(value = "/download/csv/engines", produces = "text/csv")
+    public ResponseEntity<String> exportEnginesInCSV(RequestParamsForEngineFiltration reqParams) {
+        ExportEngineData data = fileStorageService.exportEnginesInCSVByRequestParams(reqParams);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + data.getName() + ".csv\"" )
                 .contentType(MediaType.parseMediaType("text/csv"))
                 .body(data.getData());
     }
@@ -62,6 +69,11 @@ public class FileController {
     @GetMapping(value = "/images/{engineId}", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
     public byte[] getEngineImage(@PathVariable Long engineId) {
         return fileStorageService.getEngineImage(engineId);
+    }
+
+    @GetMapping(value = "/images/update/{engineId}", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
+    public byte[] getEngineImageForUpdate(@PathVariable Long engineId) {
+        return fileStorageService.getEngineImageForUpdate(engineId);
     }
 
     @DeleteMapping("/images/{engineId}")

@@ -14,9 +14,9 @@ import java.util.Optional;
 public class EngineServiceImpl implements EngineService {
     private final EngineRepository engineRepository;
 
-    public List<EngineDTO> getEngines(RequestParamsForEngineFiltration requestParamsForEngineFiltration) {
+    public EnginesDemo getEngines(RequestParamsForEngineFiltration requestParamsForEngineFiltration) {
         var engineFilter = new EngineFilter(requestParamsForEngineFiltration);
-        return engineRepository.getEngines(engineFilter.getCondition(), engineFilter.getLastFetchedEngineId());
+        return engineRepository.getEngines(engineFilter.getCondition(), engineFilter.getCurrentPage());
     }
 
     @Override

@@ -16,7 +16,7 @@ public class EngineController {
     private final EngineFacade engineFacade;
 
     @GetMapping("/engines")
-    public List<EngineDTO> getEngines(RequestParamsForEngineFiltration engineParams) {
+    public EnginesDemo getEngines(RequestParamsForEngineFiltration engineParams) {
         return engineService.getEngines(engineParams);
     }
 

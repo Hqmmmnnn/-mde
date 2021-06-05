@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface EngineRepository {
-    List<EngineDTO> getEngines(Condition condition, Long lastFetchedEngineId);
+    EnginesDemo getEngines(Condition condition, Integer currentPage);
     List<EngineInfoTable> getEngine(Long id);
     Long saveEngine(Engine engine);
     void updateEngine(UpdateEngineDTO engine);
@@ -16,6 +16,6 @@ public interface EngineRepository {
     Optional<String> findImagePath(Long engineId);
     String deleteEngineImage(Long engineId);
     void updateEngineImage(String pathToImg, Long engineId);
-
     ExportEngineData exportEngineInCSV(Long id);
+    ExportEngineData exportEnginesBy(Condition condition);
 }

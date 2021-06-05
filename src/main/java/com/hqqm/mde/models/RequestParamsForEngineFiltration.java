@@ -22,5 +22,5 @@ public class RequestParamsForEngineFiltration {
     private List<String> epaEcoStandards;
     private List<String> euEcoStandards;
     private List<String> uicEcoStandards;
-    private Long lastFetchedEngineId;
+    private Integer currentPage;
 }

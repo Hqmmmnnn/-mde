@@ -10,6 +10,7 @@ import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -34,53 +35,47 @@ public class JooqEngineRepository implements EngineRepository {
     private final Ratings r = Ratings.RATINGS;
     private final Flanges f = Flanges.FLANGES;
 
-    public List<EngineDTO> getEngines(Condition condition, Long lastFetchedEngineId) {
-        return context.select(
+    public EnginesDemo getEngines(Condition condition, Integer currentPage) {
+        int limit = 12;
+
+        List<EngineDTO> engines = context.select(
                 //general
                 e.ENGINE_ID.as("id"),
                 e.MODEL,
+                e.SERIES,
                 e.POWER_RATING,
                 e.ROTATION_FREQUENCY,
                 m.NAME.as("manufacturerName"),
-                e.TORQUE_MAX,
-                a.ASSIGNMENT,
-                r.LOAD_MODE,
-                f.TYPE.as("flangeType"),
-                // fuel consumption
-                e.FUEL_RATE,
-                e.FUEL_RATE_NOMINAL_POWER,
                 // cylinder
-                e.CYLINDER_WORKING_VOLUME,
                 cq.QUANTITY.as("cylinderQuantity"),
                 e.CYLINDER_DIAMETER,
                 e.PISTON_STROKE,
-                e.COMPRESSION_RATIO,
-                e.CYLINDER_MAX_PRESSURE,
-                cylinderArrangements.ARRANGEMENT.as("cylinderArrangement"),
-                e.CYLINDER_DEGREES,
-                // injection
-                injectionTypes.TYPE.as("injectionType"),
-                e.INJECTION_PRESSURE,
                 // dimensions
                 e.LENGTH,
                 e.WIDTH,
                 e.HEIGHT,
-                // weight
-                e.WEIGHT_DRY_NO_IMPLEMENTS,
-                // cooling
-                coolingSystemTypes.TYPE.as("coolingSystemType"),
-                e.COOLING_SYSTEM_VOLUME,
-                // oil
-                e.OIL_RATE,
-                e.OIL_SYSTEM_VOLUME,
                 // eco standards
                 imo.QUOTE_NAME.as("imoEcoStandard"),
                 epa.QUOTE_NAME.as("epaEcoStandard"),
                 eu.QUOTE_NAME.as("euEcoStandard"),
-                uic.QUOTE_NAME.as("uicEcoStandard"),
-                vesselTypes.TYPE.as("vesselType"),
-                cs.NAME.as("classificationSociety")
+                uic.QUOTE_NAME.as("uicEcoStandard")
         )
+                .from(e)
+                .leftJoin(cq).using(e.CYLINDER_QUANTITY_ID)
+                .leftJoin(imo).using(e.IMO_ECO_STANDARD_ID)
+                .leftJoin(epa).using(e.EPA_ECO_STANDARD_ID)
+                .leftJoin(eu).using(e.EU_ECO_STANDARD_ID)
+                .leftJoin(uic).using(e.UIC_ECO_STANDARD_ID)
+                .leftJoin(m).using(e.MANUFACTURER_ID)
+                .where(condition)
+                .orderBy(e.MODEL.asc())
+                .limit(limit)
+                .offset(limit * (currentPage - 1))
+                .fetch()
+                .into(EngineDTO.class);
+
+        float countOfEngines = context
+                .select(count())
                 .from(e)
                 .leftJoin(cq).using(e.CYLINDER_QUANTITY_ID)
                 .leftJoin(cylinderArrangements).using(e.CYLINDER_ARRANGEMENT_ID)
@@ -97,11 +92,12 @@ public class JooqEngineRepository implements EngineRepository {
                 .leftJoin(cs).using(e.CLASSIFICATION_SOCIETY_ID)
                 .leftJoin(f).using(e.FLANGE_ID)
                 .where(condition)
-                .orderBy(e.ENGINE_ID)
-                .seek(lastFetchedEngineId)
-                .limit(9)
-                .fetch()
-                .into(EngineDTO.class);
+                .fetchOne()
+                .value1()
+                .floatValue();
+
+        int totalPages = (int) Math.ceil(countOfEngines / limit);
+        return new EnginesDemo(totalPages, engines);
     }
 
     @Override
@@ -367,7 +363,7 @@ public class JooqEngineRepository implements EngineRepository {
 
     public UpdateEngineDTO getEngineDataForUpdate(Long id) {
         return context
-                .select(e.MANUFACTURER_ID, e.SERIES, e.MODEL, e.ASSIGNMENT_ID, e.RATING_ID.as("engineRatingId"), e.OPERATING_TIME_YEAR,
+                .select(e.ENGINE_ID, e.MANUFACTURER_ID, e.SERIES, e.MODEL, e.ASSIGNMENT_ID, e.RATING_ID.as("engineRatingId"), e.OPERATING_TIME_YEAR,
                        e.OPERATING_TIME_FIRST_TS , e.OPERATING_TIME_TO_REPAIR, e.POWER_RATING, e.ROTATION_FREQUENCY,
                        e.TORQUE_MAX, e.FUEL_RATE, e.FUEL_RATE_NOMINAL_POWER, e.CYLINDER_WORKING_VOLUME,
                        e.CYLINDER_QUANTITY_ID, e.CYLINDER_DIAMETER, e.PISTON_STROKE, e.COMPRESSION_RATIO,
@@ -502,6 +498,83 @@ public class JooqEngineRepository implements EngineRepository {
                 .fetchOne();
 
         return new ExportEngineData((String) engine.getValue("Модель"), engine.formatCSV());
+    }
+
+    public ExportEngineData exportEnginesBy(Condition condition) {
+        String enginesInCSV = context.select(
+                e.MODEL.as("Модель"),
+                e.SERIES.as("Серия"),
+                e.ROTATION_FREQUENCY.as("Частота вращения"),
+                e.POWER_RATING.as("Мощность"),
+
+                m.NAME.as("Производитель"),
+                e.TORQUE_MAX.as("Макс крутящий момент (нм)"),
+                a.ASSIGNMENT.as("Назначение"),
+                r.LOAD_MODE.as("Рейтинг"),
+                f.TYPE.as("Фланец"),
+                // recommended operating time
+                e.OPERATING_TIME_YEAR.as("Рекомендуемая наработка в год (ч)"),
+                e.OPERATING_TIME_FIRST_TS.as("Рекомендуемая наработка до первого ТО (ч)"),
+                e.OPERATING_TIME_TO_REPAIR.as("Рекомендуемая наработка до кап. ремонта (ч)"),
+                // fuel consumption
+                e.FUEL_RATE.as("Расход топлива удельный (г/кВт ч)"),
+                e.FUEL_RATE_NOMINAL_POWER.as("Расход топлива номинальной мощности (л/ч)"),
+                // cylinder
+                e.CYLINDER_WORKING_VOLUME.as("Рабочий объем цилиндра, (л)"),
+                cq.QUANTITY.as("Количество цилиндров"),
+                e.CYLINDER_DIAMETER.as("Диаметр цилиндра (мм)"),
+                e.PISTON_STROKE.as("Ход поршня (мм)"),
+                e.COMPRESSION_RATIO.as("Степень сжатия"),
+                e.CYLINDER_MAX_PRESSURE.as("Макс. давление в цилиндре (Pz бар)"),
+                cylinderArrangements.ARRANGEMENT.as("Расположение цилиндров"),
+                e.CYLINDER_DEGREES.as("Развал цилиндра градусы"),
+                // injection
+                injectionTypes.TYPE.as("Тип впрыска"),
+                e.INJECTION_PRESSURE.as("Давление впрыска (Pz бар)"),
+                // dimensions
+                e.LENGTH.as("Длина мм"),
+                e.WIDTH.as("Ширина мм"),
+                e.HEIGHT.as("Высота мм"),
+                // weight
+                e.WEIGHT_DRY_NO_IMPLEMENTS.as("Вес без оборудования (кг)"),
+                e.WEIGHT_WITH_IMPLEMENTS.as("Вес с оборудованием (кг)"),
+                // cooling
+                coolingSystemTypes.TYPE.as("Тип охлаждения"),
+                e.COOLING_SYSTEM_VOLUME.as("Объем системы охлаждения (л)"),
+                // oil
+                e.OIL_RATE.as("Расход на угар системы смазки (г/кВт ч)"),
+                e.OIL_SYSTEM_VOLUME.as("Объем системы смазки (л)"),
+                // eco standards
+                imo.QUOTE_NAME.as("IMO"),
+                epa.QUOTE_NAME.as("EPA"),
+                eu.QUOTE_NAME.as("EU"),
+                uic.QUOTE_NAME.as("UIC"),
+                // other
+                vesselTypes.TYPE.as("Тип судна"),
+                cs.NAME.as("Класс. общество"),
+                e.NOTE.as("Примечание"))
+                .from(e)
+                .leftJoin(cq).using(e.CYLINDER_QUANTITY_ID)
+                .leftJoin(cylinderArrangements).using(e.CYLINDER_ARRANGEMENT_ID)
+                .leftJoin(injectionTypes).using(e.INJECTION_TYPE_ID)
+                .leftJoin(vesselTypes).using(e.VESSEL_TYPE_ID)
+                .leftJoin(coolingSystemTypes).using(e.COOLING_SYSTEM_TYPE_ID)
+                .leftJoin(imo).using(e.IMO_ECO_STANDARD_ID)
+                .leftJoin(epa).using(e.EPA_ECO_STANDARD_ID)
+                .leftJoin(eu).using(e.EU_ECO_STANDARD_ID)
+                .leftJoin(uic).using(e.UIC_ECO_STANDARD_ID)
+                .leftJoin(m).using(e.MANUFACTURER_ID)
+                .leftJoin(a).using(e.ASSIGNMENT_ID)
+                .leftJoin(r).using(e.RATING_ID)
+                .leftJoin(cs).using(e.CLASSIFICATION_SOCIETY_ID)
+                .leftJoin(f).using(e.FLANGE_ID)
+                .where(condition)
+                .fetch()
+                .formatCSV();
+
+        DateTimeFormatter DTFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        return new ExportEngineData("Выборка двигателей от " + DTFormatter.format(currentDateTime), enginesInCSV);
     }
 }
 

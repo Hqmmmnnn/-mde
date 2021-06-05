@@ -1,13 +1,14 @@
 package com.hqqm.mde.services;
 
-import com.hqqm.mde.exceptions.FileStorageException;
 import com.hqqm.mde.lib.FromRequestParamsMappers.MultipartFileToFileMapper;
 import com.hqqm.mde.models.EngineFileNames;
 import com.hqqm.mde.models.ExportEngineData;
 import com.hqqm.mde.models.FileEntity;
+import com.hqqm.mde.models.RequestParamsForEngineFiltration;
 import com.hqqm.mde.repositories.EngineRepository;
 import com.hqqm.mde.repositories.FileRepository;
 import com.hqqm.mde.repositories.FileSystemRepository;
+import com.hqqm.mde.services.engine.impl.EngineFilter;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -66,11 +67,14 @@ public class FileStorageServiceImpl implements FileStorageService {
         return fileSystemRepository.getFile(fileName);
     }
 
+    public byte[] getEngineImageForUpdate(Long engineId) {
+        Optional<String> pathToImageOpt = engineRepository.findImagePath(engineId);
+        return fileSystemRepository.getImageForUpdate(pathToImageOpt.map(Path::of));
+    }
+
     public byte[] getEngineImage(Long engineId) {
         Optional<String> pathToImageOpt = engineRepository.findImagePath(engineId);
-        String pathToImageStr = pathToImageOpt
-                .orElseThrow(() -> new FileStorageException("Path to image" + pathToImageOpt + "is not correct"));
-        return fileSystemRepository.getImage(Path.of(pathToImageStr));
+        return fileSystemRepository.getImage(pathToImageOpt.map(Path::of));
     }
 
     public void deleteEngineImage(Long engineId) {
@@ -82,18 +86,22 @@ public class FileStorageServiceImpl implements FileStorageService {
         fileSystemRepository.deleteFile(Path.of(path));
     }
 
-    @Override
-    public ExportEngineData exportEngineInCSV(Long id) {
-        return engineRepository.exportEngineInCSV(id);
-    }
-
     public void saveImage(MultipartFile image, Long engineId) {
         fileSystemRepository.saveImage(image);
         String imageName = image.getOriginalFilename();
         if (imageName == null)
-            throw new NullPointerException("Image name is null");
+            throw new IllegalArgumentException("Image name is not correct");
 
         String pathToImage = fileSystemRepository.getImagesLocation().resolve(imageName).toString();
         engineRepository.updateEngineImage(pathToImage, engineId);
+    }
+
+    public ExportEngineData exportEngineInCSV(Long id) {
+        return engineRepository.exportEngineInCSV(id);
+    }
+
+    public ExportEngineData exportEnginesInCSVByRequestParams(RequestParamsForEngineFiltration reqParams) {
+        var engineFilter = new EngineFilter(reqParams);
+        return engineRepository.exportEnginesBy(engineFilter.getCondition());
     }
 }

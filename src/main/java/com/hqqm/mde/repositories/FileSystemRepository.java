@@ -5,13 +5,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
 public interface FileSystemRepository {
     Resource getFile(String fileName);
     void saveFiles(List<MultipartFile> files);
     void deleteFile(Path path);
 
-    byte[] getImage(Path pathToImage);
+    byte[] getImageForUpdate(Optional<Path> pathToImage);
+    byte[] getImage(Optional<Path> pathToImage);
     Path saveImage(MultipartFile image);
     void deleteEngineImage(Path pathToImage);
 
