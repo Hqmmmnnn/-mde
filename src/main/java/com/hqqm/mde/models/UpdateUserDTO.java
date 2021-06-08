@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EngineSelectData {
-    String id;
-    String value;
+public class UpdateUserDTO {
+    Integer id;
+    String role;
 }

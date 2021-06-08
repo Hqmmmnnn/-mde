@@ -9,7 +9,8 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 public enum Role {
-    ADMIN(Set.of(Permission.ENGINES_READ, Permission.ENGINES_WRITE, Permission.ENGINES_UPDATE, Permission.ENGINES_DELETE)),
+    ADMIN(Set.of(Permission.ENGINES_READ, Permission.ENGINES_WRITE, Permission.ENGINES_UPDATE, Permission.ENGINES_DELETE,
+                 Permission.USERS_READ, Permission.USERS_UPDATE)),
     EDITOR(Set.of(Permission.ENGINES_READ, Permission.ENGINES_WRITE, Permission.ENGINES_UPDATE, Permission.ENGINES_DELETE)),
     PREEDITOR(Set.of(Permission.ENGINES_READ, Permission.ENGINES_WRITE, Permission.ENGINES_UPDATE)),
     READER(Set.of(Permission.ENGINES_READ));
