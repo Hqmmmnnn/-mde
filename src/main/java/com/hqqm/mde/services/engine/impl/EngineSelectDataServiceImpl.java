@@ -1,7 +1,8 @@
-package com.hqqm.mde.services.engine;
+package com.hqqm.mde.services.engine.impl;
 
 import com.hqqm.mde.models.EngineSelectData;
 import com.hqqm.mde.repositories.EngineSelectDataRepository;
+import com.hqqm.mde.services.engine.EngineSelectDataService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +17,7 @@ public class EngineSelectDataServiceImpl implements EngineSelectDataService {
     public List<EngineSelectData> getManufacturersData() {
         return engineSelectDataRepository.getManufacturersData();
     }
-
-    @Override
-    public List<EngineSelectData> getRotationFrequenciesData() {
-        return engineSelectDataRepository.getRotationFrequenciesData();
-    }
-
+    
     @Override
     public List<EngineSelectData> getCylindersQuantityData() {
         return engineSelectDataRepository.getCylindersQuantityData();

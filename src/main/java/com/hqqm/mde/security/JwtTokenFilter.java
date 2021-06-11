@@ -1,6 +1,8 @@
 package com.hqqm.mde.security;
 
 import lombok.AllArgsConstructor;
+import org.apache.logging.log4j.util.Strings;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -20,7 +22,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String token = jwtTokenProvider.resolveToken(request);
+        String token = request.getHeader(HttpHeaders.AUTHORIZATION);
+
         try {
             if (token != null && jwtTokenProvider.validateToken(token)) {
                 Authentication authentication = jwtTokenProvider.getAuthentication(token);
@@ -29,8 +32,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             }
         } catch (JwtAuthenticationException e) {
             SecurityContextHolder.clearContext();
-            response.sendError(e.getHttpStatus().value());
-            throw new JwtAuthenticationException("JWT token is expired or invalid");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
         }
 
         filterChain.doFilter(request, response);

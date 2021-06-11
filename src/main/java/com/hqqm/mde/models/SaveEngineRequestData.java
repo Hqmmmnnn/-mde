@@ -21,7 +21,7 @@ public class SaveEngineRequestData {
     private Integer operatingTimeFirstTs;
     private Integer operatingTimeToRepair;
     private Integer powerRating;
-    private Integer rotationFrequencyId;
+    private Integer rotationFrequency;
     private Integer torqueMax;
     private Integer fuelRate;
     private Float fuelRateNominalPower;
@@ -51,6 +51,7 @@ public class SaveEngineRequestData {
     private Integer vesselTypeId;
     private Integer classificationSocietyId;
     private Integer flangeId;
+    private String note;
     private List<MultipartFile> files;
     private MultipartFile image;
 }

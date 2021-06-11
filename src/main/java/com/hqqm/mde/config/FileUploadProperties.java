@@ -6,7 +6,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "file.upload")
 @Data
 public class FileUploadProperties {
-    String location;
-    String tmpLocation;
+    String filesLocation;
     String imagesLocation;
 }

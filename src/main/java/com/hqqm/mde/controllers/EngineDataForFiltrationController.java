@@ -5,11 +5,12 @@ import com.hqqm.mde.models.RangeDTO;
 import com.hqqm.mde.services.engine.EngineDataForFiltrationService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RestController
+@RestController @RequestMapping("/api/filtrationData")
 @AllArgsConstructor
 public class EngineDataForFiltrationController {
     private final EngineDataForFiltrationService engineDataForFiltrationService;
@@ -27,11 +28,6 @@ public class EngineDataForFiltrationController {
     @GetMapping("/manufacturers")
     public List<CheckboxDTO> getManufacturers() {
         return engineDataForFiltrationService.getManufacturers();
-    }
-
-    @GetMapping("/rotationFrequencies")
-    public List<CheckboxDTO> getRotationFrequency() {
-        return engineDataForFiltrationService.getRotationFrequencies();
     }
 
     @GetMapping("/imoEcoStandards")
@@ -52,6 +48,11 @@ public class EngineDataForFiltrationController {
     @GetMapping("/uicEcoStandards")
     public List<CheckboxDTO> getUicEcoStandards() {
         return engineDataForFiltrationService.getUicEcoStandards();
+    }
+
+    @GetMapping("/rotationFrequencies")
+    public RangeDTO getRotationFrequency() {
+        return engineDataForFiltrationService.getRotationFrequencies();
     }
 
     @GetMapping("/powerRatingMinAndMax")

@@ -1,163 +1,107 @@
 package com.hqqm.mde.services;
 
-import com.hqqm.mde.config.FileUploadProperties;
-import com.hqqm.mde.exceptions.FileNotFoundException;
-import com.hqqm.mde.exceptions.FileStorageException;
 import com.hqqm.mde.lib.FromRequestParamsMappers.MultipartFileToFileMapper;
+import com.hqqm.mde.models.EngineFileNames;
+import com.hqqm.mde.models.ExportEngineData;
 import com.hqqm.mde.models.FileEntity;
+import com.hqqm.mde.models.RequestParamsForEngineFiltration;
 import com.hqqm.mde.repositories.EngineRepository;
 import com.hqqm.mde.repositories.FileRepository;
-import lombok.Getter;
+import com.hqqm.mde.repositories.FileSystemRepository;
+import com.hqqm.mde.services.engine.impl.EngineFilter;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class FileStorageServiceImpl implements FileStorageService {
-
-    @Getter
-    private final Path dirLocation;
-    @Getter
-    private final Path tmpLocation;
-    @Getter
-    private final Path imagesLocation;
     private final FileRepository fileRepository;
+    private final FileSystemRepository fileSystemRepository;
     private final EngineRepository engineRepository;
 
-    public FileStorageServiceImpl(FileUploadProperties fileUploadProperties, FileRepository fileRepository,
-                                  EngineRepository engineRepository)
+    public FileStorageServiceImpl(FileRepository fileRepository, EngineRepository engineRepository,
+                                  FileSystemRepository fileSystemRepository)
     {
         this.fileRepository = fileRepository;
+        this.fileSystemRepository = fileSystemRepository;
         this.engineRepository = engineRepository;
-        dirLocation = Paths.get(fileUploadProperties.getLocation())
-                .toAbsolutePath()
-                .normalize();
-
-        tmpLocation = Paths.get(fileUploadProperties.getTmpLocation())
-                .toAbsolutePath()
-                .normalize();
-
-        imagesLocation = Paths.get(fileUploadProperties.getImagesLocation())
-                .toAbsolutePath()
-                .normalize();
-        try {
-            Files.createDirectories(this.dirLocation);
-        }
-        catch (Exception ex) {
-            throw new FileStorageException("Could not create upload dir!");
-        }
     }
 
-    public List<String> getFileNames(Long engineId) {
+    public List<EngineFileNames> getFileNames(Long engineId) {
         return fileRepository.getFileNames(engineId);
     }
 
-    public void saveFilesMetadataInDB(List<MultipartFile> files, Long engineId) {
+    public List<EngineFileNames> saveFiles(List<MultipartFile> files, Long engineId)  {
         List<FileEntity> f = files.stream()
-                .map(file -> MultipartFileToFileMapper.mapper(file, engineId, this.dirLocation))
+                .map(file -> MultipartFileToFileMapper.mapper(file, engineId, fileSystemRepository.getFilesLocation()))
                 .collect(Collectors.toList());
 
+        fileSystemRepository.saveFiles(files);
         fileRepository.saveFiles(f);
+        List<String> filenames = f.stream().map(FileEntity::getName).collect(Collectors.toList());
+        return fileRepository.getFileNames(engineId, filenames);
     }
 
-    public void saveFilesInFileSystem(List<MultipartFile> files) {
-        for (MultipartFile file : files) {
-            String filename = file.getOriginalFilename();
-            if (filename == null)
-                throw new NullPointerException("File name is null");
-
-            Path dFile = this.dirLocation.resolve(filename);
-            try {
-                Files.copy(file.getInputStream(), dFile, StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException e) {
-                throw new FileStorageException("Could not save file: " + filename);
-            }
-
-        }
+    public Path saveEngineImageInFS(MultipartFile image) {
+        return fileSystemRepository.saveImage(image);
     }
 
-    public void updateFilesInFileSystem(List<MultipartFile> files) {
-        for (MultipartFile file : files) {
-            String filename = file.getOriginalFilename();
-            if (filename == null)
-                throw new NullPointerException("File name is null");
-
-            Path dFile = this.tmpLocation.resolve(filename);
-            try {
-                Files.copy(file.getInputStream(), dFile, StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException e) {
-                throw new FileStorageException("Could not insert file: " + filename + " in tmp folder");
-            }
-        }
+    public void deleteFiles(Long engineId) {
+        var paths = fileRepository.deleteFiles(engineId);
+        paths.stream()
+                .map(Path::of)
+                .forEach(fileSystemRepository::deleteFile);
     }
 
-    public Path saveEngineImageInFileSystem(MultipartFile image) {
-        String imageName = image.getOriginalFilename();
-        if (imageName == null)
-            throw new NullPointerException("Image name is null");
-
-        Path pathToEngineImage = this.imagesLocation.resolve(imageName);
-        try {
-            Files.copy(image.getInputStream(), pathToEngineImage, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            throw new FileStorageException("Could not save engine image: " + imageName);
-        }
-        return pathToEngineImage;
+    public void deleteFile(Long fileId) {
+        var path = fileRepository.deleteFile(fileId);
+        fileSystemRepository.deleteFile(Path.of(path));
     }
 
-    public Path updateEngineImageInFileSystem(MultipartFile image) {
-        String imageName = image.getOriginalFilename();
-        if (imageName == null)
-            throw new NullPointerException("Image name is null");
-
-        Path pathToEngineImage = this.tmpLocation.resolve(imageName);
-        try {
-            Files.copy(image.getInputStream(), pathToEngineImage, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            throw new FileStorageException("Could not insert file: " + imageName + " in tmp folder");
-        }
-        return pathToEngineImage;
+    public Resource getFile(String fileName) {
+        return fileSystemRepository.getFile(fileName);
     }
 
-    public void deleteEngineFiles(Long engineId) {
-        fileRepository.deleteEngineFiles((engineId));
-    }
-
-    public Resource loadFile(String fileName) {
-        try {
-            Path file = this.dirLocation.resolve(fileName).normalize();
-            Resource resource = new UrlResource(file.toUri());
-
-            if (resource.exists())
-                return resource;
-            else
-                throw new FileNotFoundException("Could not find file: " + fileName);
-        } catch (MalformedURLException e) {
-            throw new FileNotFoundException("Could not download file: " + fileName);
-        }
+    public byte[] getEngineImageForUpdate(Long engineId) {
+        Optional<String> pathToImageOpt = engineRepository.findImagePath(engineId);
+        return fileSystemRepository.getImageForUpdate(pathToImageOpt.map(Path::of));
     }
 
     public byte[] getEngineImage(Long engineId) {
         Optional<String> pathToImageOpt = engineRepository.findImagePath(engineId);
-        String pathToImageStr = pathToImageOpt
-                .orElseThrow(() -> new FileStorageException("Path to image" + pathToImageOpt + "is null"));
+        return fileSystemRepository.getImage(pathToImageOpt.map(Path::of));
+    }
 
-        Path pathToImage = Paths.get(pathToImageStr);
-        try {
-            return Files.readAllBytes(pathToImage);
-        } catch (IOException e) {
-            throw new FileStorageException("Image not found");
-        }
+    public void deleteEngineImage(Long engineId) {
+        String path = engineRepository.deleteEngineImage(engineId);
+        fileSystemRepository.deleteEngineImage(Path.of(path));
+    }
+
+    public void deleteEngineImageInFS(String path) {
+        fileSystemRepository.deleteFile(Path.of(path));
+    }
+
+    public void saveImage(MultipartFile image, Long engineId) {
+        fileSystemRepository.saveImage(image);
+        String imageName = image.getOriginalFilename();
+        if (imageName == null)
+            throw new IllegalArgumentException("Image name is not correct");
+
+        String pathToImage = fileSystemRepository.getImagesLocation().resolve(imageName).toString();
+        engineRepository.updateEngineImage(pathToImage, engineId);
+    }
+
+    public ExportEngineData exportEngineInCSV(Long id) {
+        return engineRepository.exportEngineInCSV(id);
+    }
+
+    public ExportEngineData exportEnginesInCSVByRequestParams(RequestParamsForEngineFiltration reqParams) {
+        var engineFilter = new EngineFilter(reqParams);
+        return engineRepository.exportEnginesBy(engineFilter.getCondition());
     }
 }

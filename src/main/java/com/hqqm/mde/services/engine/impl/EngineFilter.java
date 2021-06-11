@@ -1,4 +1,4 @@
-package com.hqqm.mde.services.engine;
+package com.hqqm.mde.services.engine.impl;
 
 import com.hqqm.mde.jooq.tables.*;
 import com.hqqm.mde.lib.FromRequestParamsMappers.FromReqListOfStringConverter;
@@ -11,19 +11,20 @@ import java.util.List;
 
 import static org.jooq.impl.DSL.trueCondition;
 
-class EngineFilter {
+public class EngineFilter {
     private final RequestParamsForEngineFiltration e;
     private Condition condition;
-    private final Long lastFetchedEngineId;
+    private final Integer currentPage;
 
     public EngineFilter(RequestParamsForEngineFiltration e) {
         this.e = e;
         condition = trueCondition();
-        lastFetchedEngineId = e.getLastFetchedEngineId() == null ? 0 : e.getLastFetchedEngineId();
+        Integer currPage = e.getCurrentPage();
+        currentPage = currPage == null ? 1 : currPage;
     }
 
-    public Long getLastFetchedEngineId() {
-        return lastFetchedEngineId;
+    public Integer getCurrentPage() {
+        return currentPage;
     }
 
     public Condition getCondition() {
@@ -55,9 +56,9 @@ class EngineFilter {
             condition = condition.and(Engines.ENGINES_.POWER_RATING.between(range[0]).and(range[1]));
         }
 
-        if (rotationFrequencies != null && rotationFrequencies.size() > 0) {
-            List<Integer> rotations = FromReqListOfStringConverter.toIntegers(rotationFrequencies);
-            condition = condition.and(RotationFrequency.ROTATION_FREQUENCY.FREQUENCY.in(rotations));
+        if (rotationFrequencies != null) {
+            int[] range = StringToRangeConverter.convert(rotationFrequencies);
+            condition = condition.and(Engines.ENGINES_.ROTATION_FREQUENCY.between(range[0]).and(range[1]));
         }
 
         if (cylinderQuantity != null && cylinderQuantity.size() > 0) {

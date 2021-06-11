@@ -6,6 +6,7 @@ import com.hqqm.mde.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -16,8 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@RestController
-@RequestMapping("/auth")
+@RestController @RequestMapping("/api/auth")
 @AllArgsConstructor
 public class AuthController {
 
@@ -31,27 +31,21 @@ public class AuthController {
             String email = request.getEmail();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, request.getPassword()));
             User user = userService.findByEmail(email)
-                    .orElseThrow(() -> new UsernameNotFoundException("User does not exist"));
+                    .orElseThrow(() -> new UsernameNotFoundException("Такого пользователя не существует"));
             String token = jwtTokenProvider.createToken(email, user.getRole().name());
             var response = new AuthenticationResponseDTO(token);
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
-            return new ResponseEntity<>("Invalid email or password", HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("Неверный емейл или пароль", HttpStatus.FORBIDDEN);
         }
     }
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody SignupRequestDTO signupRequestDTO) {
         if(userService.findByEmail(signupRequestDTO.getEmail()).isPresent())
-            return ResponseEntity.badRequest().body("Username is already taken");
+            return ResponseEntity.badRequest().body("Данное имя пользователя уже занято");
 
         userService.create(signupRequestDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
-    }
-
-    @PostMapping("/logout")
-    public void logout(HttpServletRequest request, HttpServletResponse response) {
-        var logoutHandler = new SecurityContextLogoutHandler();
-        logoutHandler.logout(request, response, null);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Регистрация прошла успешно");
     }
 }

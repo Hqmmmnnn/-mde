@@ -1,8 +1,9 @@
-package com.hqqm.mde.repositories;
+package com.hqqm.mde.repositories.impl;
 
 import com.hqqm.mde.jooq.tables.*;
 import com.hqqm.mde.models.CheckboxDTO;
 import com.hqqm.mde.models.RangeDTO;
+import com.hqqm.mde.repositories.EngineDataForFiltrationRepository;
 import lombok.AllArgsConstructor;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
@@ -19,7 +20,6 @@ public class JooqEngineDataForFiltration implements EngineDataForFiltrationRepos
     private final DSLContext context;
     private final Engines e = Engines.ENGINES_;
     private final CylinderQuantity cq = CylinderQuantity.CYLINDER_QUANTITY;
-    private final RotationFrequency rf = RotationFrequency.ROTATION_FREQUENCY;
     private final ImoEcoStandard imo = ImoEcoStandard.IMO_ECO_STANDARD;
     private final EpaEcoStandard epa = EpaEcoStandard.EPA_ECO_STANDARD;
     private final EuEcoStandard eu = EuEcoStandard.EU_ECO_STANDARD;
@@ -57,20 +57,11 @@ public class JooqEngineDataForFiltration implements EngineDataForFiltrationRepos
     }
 
     @Override
-    public List<CheckboxDTO> getRotationFrequencies() {
-        return context
-                .selectDistinct(rf.FREQUENCY.as("name"))
-                .from(rf)
-                .orderBy(rf.FREQUENCY.asc())
-                .fetch()
-                .into(CheckboxDTO.class);
-    }
-
-    @Override
     public List<CheckboxDTO> getImoEcoStandards() {
         return context
                 .select(imo.QUOTE_NAME.as("name"))
                 .from(imo)
+                .orderBy(imo.QUOTE_NAME.asc())
                 .fetch()
                 .into(CheckboxDTO.class);
     }
@@ -80,6 +71,7 @@ public class JooqEngineDataForFiltration implements EngineDataForFiltrationRepos
         return context
                 .select(epa.QUOTE_NAME.as("name"))
                 .from(epa)
+                .orderBy(epa.QUOTE_NAME.asc())
                 .fetch()
                 .into(CheckboxDTO.class);
     }
@@ -89,6 +81,7 @@ public class JooqEngineDataForFiltration implements EngineDataForFiltrationRepos
         return context
                 .select(eu.QUOTE_NAME.as("name"))
                 .from(eu)
+                .orderBy(eu.QUOTE_NAME.asc())
                 .fetch()
                 .into(CheckboxDTO.class);
     }
@@ -98,8 +91,18 @@ public class JooqEngineDataForFiltration implements EngineDataForFiltrationRepos
         return context
                 .select(uic.QUOTE_NAME.as("name"))
                 .from(uic)
+                .orderBy(uic.QUOTE_NAME.asc())
                 .fetch()
                 .into(CheckboxDTO.class);
+    }
+
+    @Override
+    public RangeDTO getRotationFrequencies() {
+        return context
+                .select(min(e.ROTATION_FREQUENCY).as("from"), max(e.ROTATION_FREQUENCY).as("to"))
+                .from(e)
+                .fetchOne()
+                .into(RangeDTO.class);
     }
 
     @Override

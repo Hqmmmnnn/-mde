@@ -11,7 +11,7 @@ public class RequestParamsForEngineFiltration {
     private String model;
     private List<String> manufacturerNames;
     private String powerRating;
-    private List<String> rotationFrequencies;
+    private String rotationFrequencies;
     private List<String> cylindersQuantity;
     private String weightDryNoImplements;
     private String length;
@@ -22,5 +22,5 @@ public class RequestParamsForEngineFiltration {
     private List<String> epaEcoStandards;
     private List<String> euEcoStandards;
     private List<String> uicEcoStandards;
-    private Long lastFetchedEngineId;
+    private Integer currentPage;
 }
