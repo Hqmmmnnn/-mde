@@ -9,5 +9,10 @@
       "name": "file.upload.imagesLocation",
       "type": "java.lang.String",
       "description": "Description for file.upload.imagesLocation."
+    },
+    {
+      "name": "jooq",
+      "type": "java.lang.String",
+      "description": "Description for jooq."
     }
   ] }

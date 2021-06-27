@@ -26,14 +26,14 @@ public class AuthController {
     private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthenticationRequestDTO request) {
+    public ResponseEntity<?> login(@RequestBody AuthenticationDTO.Request request) {
         try {
             String email = request.getEmail();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, request.getPassword()));
             User user = userService.findByEmail(email)
                     .orElseThrow(() -> new UsernameNotFoundException("Такого пользователя не существует"));
             String token = jwtTokenProvider.createToken(email, user.getRole().name());
-            var response = new AuthenticationResponseDTO(token);
+            var response = new AuthenticationDTO.Response(token);
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
             return new ResponseEntity<>("Неверный емейл или пароль", HttpStatus.FORBIDDEN);

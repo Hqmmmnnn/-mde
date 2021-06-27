@@ -75,6 +75,7 @@
 				<groupId>org.jooq</groupId>
 				<artifactId>jooq-codegen-maven</artifactId>
 				<version>3.14.8</version>
+
 				<executions>
 					<execution>
 						<id>generate-postgre</id>
@@ -82,32 +83,34 @@
 						<goals>
 							<goal>generate</goal>
 						</goals>
-						<configuration>
-							<jdbc>
-								<driver>org.postgresql.Driver</driver>
-								<url>jdbc:postgresql://localhost:5432/mde</url>
-								<user>postgres</user>
-								<password>start</password>
-							</jdbc>
-							<generator>
-								<database>
-									<name>
-										org.jooq.meta.postgres.PostgresDatabase
-									</name>
-									<includes>.*</includes>
-									<inputSchema>engines</inputSchema>
-								</database>
-								<generate>
-									<records>true</records>
-								</generate>
-								<target>
-									<packageName>com.hqqm.mde.jooq</packageName>
-									<directory>target/generated-sources/jooq</directory>
-								</target>
-							</generator>
-						</configuration>
 					</execution>
 				</executions>
+
+				<configuration>
+					<jdbc>
+						<driver>org.postgresql.Driver</driver>
+						<url>jdbc:postgresql://db:5432/mde</url>
+						<user>postgres</user>
+						<password>start</password>
+					</jdbc>
+
+					<generator>
+						<database>
+							<name>
+								org.jooq.meta.postgres.PostgresDatabase
+							</name>
+							<includes>.*</includes>
+							<inputSchema>engines</inputSchema>
+						</database>
+						<generate>
+							<records>true</records>
+						</generate>
+						<target>
+							<packageName>com.hqqm.mde.jooq</packageName>
+							<directory>target/generated-sources/jooq</directory>
+						</target>
+					</generator>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
